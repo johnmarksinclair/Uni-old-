@@ -35,14 +35,15 @@ public class BSTTest
     @Test
     public void testPrintKeysInOrder() {
     	 BST<Integer, Integer> bst = new BST<Integer, Integer>();
-         assertEquals("()", bst.printKeysInOrder()); // test empty
+         assertEquals("()", bst.printKeysInOrder());
          bst.put(9, 9);
-         assertEquals("(()9())", bst.printKeysInOrder()); // test single node tree
+         assertEquals("(()9())", bst.printKeysInOrder());
          bst.put(6, 6);
          bst.put(7, 7);
          bst.put(11,11);
          bst.put(3, 3);
-         assertEquals("(((()3())6(()7()))9(()11()))", bst.printKeysInOrder()); // test multi node tree
+         bst.put(14, 14);
+         assertEquals("(((()3())6(()7()))9(()11((()14())))", bst.printKeysInOrder());
     }
 
 

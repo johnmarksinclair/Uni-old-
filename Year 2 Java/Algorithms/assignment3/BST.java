@@ -179,6 +179,10 @@ public class BST<Key extends Comparable<Key>, Value> {
 	public String printKeysInOrder(Node node) {
 		if (node.left == null && node.right == null)
 			return "(()" + node.val + "())";
+		else if (node.left == null && node.right != null) 
+			return "(()" + node.val + "(" + printKeysInOrder(node.right) + ")";
+		else if (node.left != null && node.right == null) 
+			return "(" + printKeysInOrder(node.left) + ")" + node.val + "(())";
 		else
 			return "(" + printKeysInOrder(node.left) + node.val + printKeysInOrder(node.right) + ")";
 	}
