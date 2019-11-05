@@ -161,9 +161,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 	 * for each node, the keys in the right subtree should appear before the key in
 	 * the node. For each subtree, its keys should appear within a parenthesis.
 	 *
-	 * Example 1: Empty tree -- output: "()" 
-	 * Example 2: Tree containing only "A" -- output: "(()A())" 
-	 * Example 3: Tree: B / \ A C \ D -- output: "((()A())B(()C(()D())))"
+	 * Example 1: Empty tree -- output: "()" Example 2: Tree containing only "A" --
+	 * output: "(()A())" Example 3: Tree: B / \ A C \ D -- output:
+	 * "((()A())B(()C(()D())))"
 	 *
 	 * output of example in the assignment:
 	 * (((()A(()C()))E((()H(()M()))R()))S(()X()))
@@ -175,11 +175,12 @@ public class BST<Key extends Comparable<Key>, Value> {
 			return "()";
 		return printKeysInOrder(this.root);
 	}
-	
+
 	public String printKeysInOrder(Node node) {
-		String output = "";
-		
-		return output;
+		if (node.left == null && node.right == null)
+			return "(()" + node.val + "())";
+		else
+			return "(" + printKeysInOrder(node.left) + node.val + printKeysInOrder(node.right) + ")";
 	}
 
 	/**
