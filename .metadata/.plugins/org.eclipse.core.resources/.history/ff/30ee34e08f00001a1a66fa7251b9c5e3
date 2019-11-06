@@ -155,7 +155,31 @@ public class BST<Key extends Comparable<Key>, Value> {
 	}
 
 	public Key median(Node node, int index) {
-		return null;
+		if (node.left != null) {
+			if (node.left.N >= index)
+				return median(node.left, index);
+			if ((node.N - node.left.N) == index)
+				return node.key;
+		}
+		if (this.height()%2 == 0) {
+			if (node.N == index)
+				return node.right.key;
+		} else if (this.height()%2 == 1) {
+			if (node.N == index) {
+				if (node.left == null)
+					return node.key;
+				else
+					return getRightmost(node);
+			}
+		}
+		return median(node.right, index);
+	}
+	
+	public Key getRightmost(Node node) {
+		if (node.right != null) 
+			return getRightmost(node.right);
+		else
+			return node.key;
 	}
 
 	/**
