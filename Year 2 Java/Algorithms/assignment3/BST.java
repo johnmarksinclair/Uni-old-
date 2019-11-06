@@ -149,10 +149,37 @@ public class BST<Key extends Comparable<Key>, Value> {
 	public Key median() {
 		if (isEmpty())
 			return null;
-		// TODO fill in the correct implementation. The running time should be Theta(h),
-		// where h is the height of the tree.
+		else if ((this.root.N + 1) / 2 == 1)
+			return this.root.key;
+		return median(this.root, (this.root.N + 1) / 2);
+	}
 
-		return null;
+	public Key median(Node node, int index) {
+		if (node.left != null) {
+			if (node.left.N >= index)
+				return median(node.left, index);
+			if ((node.N - node.left.N) == index)
+				return node.key;
+		}
+		if (this.height()%2 == 0) {
+			if (node.N == index)
+				return node.right.key;
+		} else if (this.height()%2 == 1) {
+			if (node.N == index) {
+				if (node.left == null)
+					return node.key;
+				else
+					return getRightmost(node);
+			}
+		}
+		return median(node.right, index);
+	}
+	
+	public Key getRightmost(Node node) {
+		if (node.right != null) 
+			return getRightmost(node.right);
+		else
+			return node.key;
 	}
 
 	/**
@@ -179,10 +206,10 @@ public class BST<Key extends Comparable<Key>, Value> {
 	public String printKeysInOrder(Node node) {
 		if (node.left == null && node.right == null)
 			return "(()" + node.key + "())";
-		else if (node.left == null && node.right != null) 
-			return "(()" + node.key + "(" + printKeysInOrder(node.right) + ")";
-		else if (node.left != null && node.right == null) 
-			return "(" + printKeysInOrder(node.left) + ")" + node.key + "(())";
+		else if (node.left == null && node.right != null)
+			return "(()" + node.key + printKeysInOrder(node.right) + ")";
+		else if (node.left != null && node.right == null)
+			return "(" + printKeysInOrder(node.left) + node.key + "())";
 		else
 			return "(" + printKeysInOrder(node.left) + node.key + printKeysInOrder(node.right) + ")";
 	}
