@@ -113,7 +113,7 @@ public class BST<Key extends Comparable<Key>, Value> {
 	/**
 	 * Tree height.
 	 *
-	 * Asymptotic worst-case running time using Theta notation: TODO
+	 * Asymptotic worst-case running time using Theta notation: Theta(N)
 	 *
 	 * @return the number of links from the root to the deepest leaf.
 	 *
@@ -132,11 +132,10 @@ public class BST<Key extends Comparable<Key>, Value> {
 			int lHeight = height(node.left);
 			int rHeight = height(node.right);
 
-			if (rHeight > lHeight) {
+			if (rHeight > lHeight)
 				return (rHeight + 1);
-			} else {
+			else
 				return (lHeight + 1);
-			}
 		}
 	}
 
@@ -149,10 +148,17 @@ public class BST<Key extends Comparable<Key>, Value> {
 	public Key median() {
 		if (isEmpty())
 			return null;
-		// TODO fill in the correct implementation. The running time should be Theta(h),
-		// where h is the height of the tree.
+		return median(this.root, (this.root.N + 1) / 2);
+	}
 
-		return null;
+	public Key median(Node node, int index) {
+		int pos = size(node.left) + 1;
+		if (pos == index)
+			return node.key;
+		else if (pos > index)
+			return median(node.left, index);
+		else
+			return median(node.right, index - pos);
 	}
 
 	/**
@@ -161,9 +167,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 	 * for each node, the keys in the right subtree should appear before the key in
 	 * the node. For each subtree, its keys should appear within a parenthesis.
 	 *
-	 * Example 1: Empty tree -- output: "()" 
-	 * Example 2: Tree containing only "A" -- output: "(()A())" 
-	 * Example 3: Tree: B / \ A C \ D -- output: "((()A())B(()C(()D())))"
+	 * Example 1: Empty tree -- output: "()" Example 2: Tree containing only "A" --
+	 * output: "(()A())" Example 3: Tree: B / \ A C \ D -- output:
+	 * "((()A())B(()C(()D())))"
 	 *
 	 * output of example in the assignment:
 	 * (((()A(()C()))E((()H(()M()))R()))S(()X()))
@@ -175,11 +181,12 @@ public class BST<Key extends Comparable<Key>, Value> {
 			return "()";
 		return printKeysInOrder(this.root);
 	}
-	
+
 	public String printKeysInOrder(Node node) {
-		String output = "";
-		
-		return output;
+		if (node == null)
+			return "()";
+		else
+			return "(" + printKeysInOrder(node.left) + node.key + printKeysInOrder(node.right) + ")";
 	}
 
 	/**
@@ -189,12 +196,17 @@ public class BST<Key extends Comparable<Key>, Value> {
 	 * @return a multi-line string with the pretty ascii picture of the tree.
 	 */
 	public String prettyPrintKeys() {
-		// TODO fill in the correct implementation.
-		return null;
+		return prettyPrintKeys(root, "");
+	}
+	
+	public String prettyPrintKeys(Node node, String string) {
+		if (node == null) return string + "-null\n";
+		else return string + "-" + node.key + "\n" + prettyPrintKeys(node.left, string + " |") 
+		+ prettyPrintKeys(node.right, string + "  ");
 	}
 
 	/**
-	 * Deteles a key from a tree (if the key is in the tree). Note that this method
+	 * Deletes a key from a tree (if the key is in the tree). Note that this method
 	 * works symmetrically from the Hibbard deletion: If the node to be deleted has
 	 * two child nodes, then it needs to be replaced with its predecessor (not its
 	 * successor) node.

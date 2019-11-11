@@ -198,10 +198,13 @@ public class BST<Key extends Comparable<Key>, Value> {
 	public String prettyPrintKeys() {
 		return prettyPrintKeys(root, "");
 	}
-	
+
 	public String prettyPrintKeys(Node node, String string) {
-		if (node == null) return string + "-null\n";
-		else return string + "-" + node.key + "\n" + prettyPrintKeys(node.left, string + " |") + prettyPrintKeys(node.right, string + "  ");
+		if (node == null)
+			return string + "-null\n";
+		else
+			return string + "-" + node.key + "\n" + prettyPrintKeys(node.left, string + " |")
+					+ prettyPrintKeys(node.right, string + "  ");
 	}
 
 	/**
