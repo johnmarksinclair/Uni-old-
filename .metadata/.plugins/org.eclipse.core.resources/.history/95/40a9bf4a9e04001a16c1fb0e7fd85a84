@@ -185,6 +185,12 @@ public class BST<Key extends Comparable<Key>, Value> {
 	public String printKeysInOrder(Node node) {
 		if (node == null)
 			return "()";
+//		if (node.left == null && node.right == null)
+//			return "(()" + node.key + "())";
+//		else if (node.left == null && node.right != null)
+//			return "(()" + node.key + printKeysInOrder(node.right) + ")";
+//		else if (node.left != null && node.right == null)
+//			return "(" + printKeysInOrder(node.left) + node.key + "())";
 		else
 			return "(" + printKeysInOrder(node.left) + node.key + printKeysInOrder(node.right) + ")";
 	}
@@ -196,12 +202,8 @@ public class BST<Key extends Comparable<Key>, Value> {
 	 * @return a multi-line string with the pretty ascii picture of the tree.
 	 */
 	public String prettyPrintKeys() {
-		return prettyPrintKeys(root, "");
-	}
-	
-	public String prettyPrintKeys(Node node, String string) {
-		if (node == null) return string + "-null\n";
-		else return string + "-" + node.key + "\n" + prettyPrintKeys(node.left, string + " |") + prettyPrintKeys(node.right, string + "  ");
+		// TODO fill in the correct implementation.
+		return null;
 	}
 
 	/**
