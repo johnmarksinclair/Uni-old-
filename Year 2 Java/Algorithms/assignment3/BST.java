@@ -113,7 +113,7 @@ public class BST<Key extends Comparable<Key>, Value> {
 	/**
 	 * Tree height.
 	 *
-	 * Asymptotic worst-case running time using Theta notation: TODO
+	 * Asymptotic worst-case running time using Theta notation: Theta(N)
 	 *
 	 * @return the number of links from the root to the deepest leaf.
 	 *
@@ -180,12 +180,14 @@ public class BST<Key extends Comparable<Key>, Value> {
 	}
 
 	public String printKeysInOrder(Node node) {
-		if (node.left == null && node.right == null)
-			return "(()" + node.key + "())";
-		else if (node.left == null && node.right != null)
-			return "(()" + node.key + printKeysInOrder(node.right) + ")";
-		else if (node.left != null && node.right == null)
-			return "(" + printKeysInOrder(node.left) + node.key + "())";
+		if (node == null)
+			return "()";
+//		if (node.left == null && node.right == null)
+//			return "(()" + node.key + "())";
+//		else if (node.left == null && node.right != null)
+//			return "(()" + node.key + printKeysInOrder(node.right) + ")";
+//		else if (node.left != null && node.right == null)
+//			return "(" + printKeysInOrder(node.left) + node.key + "())";
 		else
 			return "(" + printKeysInOrder(node.left) + node.key + printKeysInOrder(node.right) + ")";
 	}
@@ -202,7 +204,7 @@ public class BST<Key extends Comparable<Key>, Value> {
 	}
 
 	/**
-	 * Deteles a key from a tree (if the key is in the tree). Note that this method
+	 * Deletes a key from a tree (if the key is in the tree). Note that this method
 	 * works symmetrically from the Hibbard deletion: If the node to be deleted has
 	 * two child nodes, then it needs to be replaced with its predecessor (not its
 	 * successor) node.
