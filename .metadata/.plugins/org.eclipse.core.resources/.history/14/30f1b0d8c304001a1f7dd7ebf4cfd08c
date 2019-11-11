@@ -86,10 +86,10 @@ public class BSTTest
         assertEquals("Checking pretty printing of empty tree",
                 "-null\n", bst.prettyPrintKeys());
 
-					         //  -7
-					         //   |-3
-					         //   | |-1
-					         //   | | |-null
+        //  -7
+        //   |-3
+        //   | |-1
+        //   | | |-null
         bst.put(7, 7);       //   | |  -2
         bst.put(8, 8);       //   | |   |-null
         bst.put(3, 3);       //   | |    -null
@@ -98,11 +98,11 @@ public class BSTTest
         bst.put(6, 6);       //   |   | |-null
         bst.put(4, 4);       //   |   |  -5
         bst.put(5, 5);       //   |   |   |-null
-        					 //   |   |    -null
-        					 //   |    -null
-        					 //    -8
-        					 //     |-null
-        					 //      -null
+        //   |   |    -null
+        //   |    -null
+        //    -8
+        //     |-null
+        //      -null
 
         String result =
                 "-7\n" +

@@ -216,10 +216,7 @@ public class BST<Key extends Comparable<Key>, Value> {
 	 * @param key the key to delete
 	 */
 	public void delete(Key key) {
-		delete(root, key);
+		// TODO fill in the correct implementation.
 	}
-	
-	public void delete(Node node, Key key) {
-		
-	}
+
 }
