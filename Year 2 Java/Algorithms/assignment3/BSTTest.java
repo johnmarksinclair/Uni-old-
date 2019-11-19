@@ -28,12 +28,12 @@ public class BSTTest
 	@Test
 	public void testSize() {
         BST<Integer, Integer> bst = new BST<Integer, Integer>();
-        assertTrue(bst.size() == 0);
+        assertEquals(bst.size(), 0);
         bst.put(5,  5);
-        assertTrue(bst.size() == 1);
+        assertEquals(bst.size(), 1);
         bst.put(1,  1);
         bst.put(6, 6);
-        assertTrue(bst.size() == 3);
+        assertEquals(bst.size(), 3);
 	}
 	
 	@Test
@@ -51,15 +51,19 @@ public class BSTTest
         assertNull(bst.get(5));
         bst.put(5, 5);
         assertNull(bst.get(7));
-        assertTrue(bst.get(5).equals(5));
+        assertEquals((int) bst.get(5), 5);
+        bst.put(3, 3);
+        assertEquals((int) bst.get(3), 3);
 	}
 	
 	@Test
 	public void testPut() {
         BST<Integer, Integer> bst = new BST<Integer, Integer>();
+        bst.put(5, null);
         assertNull(bst.get(5));
         bst.put(5, 5);
-        assertTrue(bst.get(5) == 5);
+        bst.put(5, 5);
+        assertEquals((int) bst.get(5), 5);
 	}
 
     @Test
@@ -73,6 +77,10 @@ public class BSTTest
         bst.put(11,11);
         bst.put(3, 3);
         assertEquals(2, bst.height());
+        bst.put(14, 14);
+        bst.put(17, 17);
+        bst.put(16, 16);
+        assertEquals(4, bst.height());
     }
     
     @Test
@@ -165,7 +173,7 @@ public class BSTTest
         assertEquals("Checking pretty printing of non-empty tree", result, bst.prettyPrintKeys());
     }
 
-    //@Test
+    @Test
     public void testDelete() {
         BST<Integer, Integer> bst = new BST<Integer, Integer>();
         bst.delete(1);
@@ -199,5 +207,4 @@ public class BSTTest
         assertEquals("Deleting node with two children",
                 "(((()1())2(()4(()5())))7())", bst.printKeysInOrder());
     }
-
 }
