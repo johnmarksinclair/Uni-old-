@@ -18,6 +18,49 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class BSTTest
 {
+	
+	@Test
+	public void testIsEmpty() {
+        BST<Integer, Integer> bst = new BST<Integer, Integer>();
+        assertTrue(bst.isEmpty());
+	}
+	
+	@Test
+	public void testSize() {
+        BST<Integer, Integer> bst = new BST<Integer, Integer>();
+        assertTrue(bst.size() == 0);
+        bst.put(5,  5);
+        assertTrue(bst.size() == 1);
+        bst.put(1,  1);
+        bst.put(6, 6);
+        assertTrue(bst.size() == 3);
+	}
+	
+	@Test
+	public void testContains() {
+        BST<Integer, Integer> bst = new BST<Integer, Integer>();
+        assertFalse(bst.contains(5));
+        bst.put(5,  5);
+        assertTrue(bst.contains(5));
+        assertFalse(bst.contains(7));
+	}
+	
+	@Test
+	public void testGet() {
+        BST<Integer, Integer> bst = new BST<Integer, Integer>();
+        assertNull(bst.get(5));
+        bst.put(5, 5);
+        assertNull(bst.get(7));
+        assertTrue(bst.get(5).equals(5));
+	}
+	
+	@Test
+	public void testPut() {
+        BST<Integer, Integer> bst = new BST<Integer, Integer>();
+        assertNull(bst.get(5));
+        bst.put(5, 5);
+        assertTrue(bst.get(5) == 5);
+	}
 
     @Test
     public void testHeight() {
@@ -77,9 +120,6 @@ public class BSTTest
          assertEquals("(()4(()6(()9())))", bst.printKeysInOrder());
     }
 
-
-    /** <p>Test {@link BST#prettyPrintKeys()}.</p> */
-
     @Test
     public void testPrettyPrint() {
         BST<Integer, Integer> bst = new BST<Integer, Integer>();
@@ -125,8 +165,6 @@ public class BSTTest
         assertEquals("Checking pretty printing of non-empty tree", result, bst.prettyPrintKeys());
     }
 
-
-    /** <p>Test {@link BST#delete(Comparable)}.</p> */
     //@Test
     public void testDelete() {
         BST<Integer, Integer> bst = new BST<Integer, Integer>();
