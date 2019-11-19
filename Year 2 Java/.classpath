@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="Telecoms"/>
 	<classpathentry kind="src" path="Algorithms"/>
-	<classpathentry kind="lib" path="F:/College/Uni/Year 2 Java/tcdlib.jar"/>
+	<classpathentry kind="lib" path="U:/github/Uni/Year 2 Java/tcdlib.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
