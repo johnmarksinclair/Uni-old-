@@ -6,7 +6,23 @@ import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class Node {
+
+	static final int NO_OF_ROUTERS = 3;
+	
 	static final int PACKETSIZE = 65536;
+
+	static final int TYPE_POS = 0;
+	static final int LENGTH_POS = 1;
+	static final int HEADER_LENGTH = 2;
+	static final int CONTROLLER_PORT = 50005;
+	static final int FIRST_ROUTER_PORT = 50010;
+	
+	static final byte TYPE_ACK = 4;
+	static final byte CONNECT_ACK = 5;
+	static final int ACKCODE_POS = 1;
+	static final byte ACK_ALLOK = 10;
+	
+	static final byte ROUTER = 3;
 
 	DatagramSocket socket;
 	Listener listener;
