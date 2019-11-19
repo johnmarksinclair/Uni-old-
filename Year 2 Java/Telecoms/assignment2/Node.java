@@ -14,6 +14,10 @@ public abstract class Node {
 	static final int TYPE_POS = 0;
 	static final int LENGTH_POS = 1;
 	static final int HEADER_LENGTH = 2;
+	
+	static final String DEFAULT_DST_NODE = "localhost"; // Name of the host for the server
+	static final int USER1_PORT = 50000;
+	static final int USER2_PORT = 50001;
 	static final int CONTROLLER_PORT = 50005;
 	static final int FIRST_ROUTER_PORT = 50010;
 	
@@ -23,6 +27,7 @@ public abstract class Node {
 	static final byte ACK_ALLOK = 10;
 	
 	static final byte ROUTER = 3;
+	static final byte USER = 2;
 
 	DatagramSocket socket;
 	Listener listener;

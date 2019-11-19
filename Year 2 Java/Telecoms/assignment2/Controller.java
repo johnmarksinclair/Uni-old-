@@ -7,7 +7,7 @@ public class Controller extends Node {
 	
 	Terminal terminal;
 	InetSocketAddress dstAddress;
-	static ArrayList<SocketAddress> connectedRouters = new ArrayList<SocketAddress>();
+	public static ArrayList<SocketAddress> connectedRouters = new ArrayList<SocketAddress>();
 	
 	Controller(Terminal terminal, int port) {
 		try {
