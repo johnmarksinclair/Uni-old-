@@ -10,8 +10,6 @@ package assignment3;
  *
  *************************************************************************/
 
-import java.util.NoSuchElementException;
-
 public class BST<Key extends Comparable<Key>, Value> {
 	private Node root; // root of BST
 
@@ -216,10 +214,38 @@ public class BST<Key extends Comparable<Key>, Value> {
 	 * @param key the key to delete
 	 */
 	public void delete(Key key) {
-		delete(root, key);
+		root = delete(root, key);
 	}
 	
-	public void delete(Node node, Key key) {
-		
+	public Node delete(Node node, Key key) {
+		if (node == null) return null;
+		int test = key.compareTo(node.key);
+		if (test < 0)
+			node.left = delete(node.left, key);
+		else if (test > 0)
+			node.right = delete(node.right, key);
+		else {
+			if (node.left == null)
+				return node.right;
+			else if (node.right == null)
+				return node.left;
+			else {
+				Node temp = node;
+				node = getMax(temp.left);
+				node.left = deleteMax(temp.left);
+				node.right = temp.right;
+			}
+		}
+		node.N = size(node.left) + size(node.right) + 1;
+		return node;
+	}
+	
+	public Node deleteMax(Node node) {
+		return delete(node, getMax(node).key);
+	}
+	
+	public Node getMax(Node node) {
+		if (node.right == null) return node;
+		else return getMax(node.right);
 	}
 }
