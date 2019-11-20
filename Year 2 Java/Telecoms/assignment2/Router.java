@@ -4,13 +4,20 @@ import java.net.*;
 
 public class Router extends Node {
 	
-	Terminal terminal;
-	InetSocketAddress dstAddress;
+	public static Terminal terminal;
+	public static InetSocketAddress dstAddress;
+	public static InetSocketAddress port;
+	public static InetSocketAddress nextPort;
 
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
-			this.terminal = terminal;
-			dstAddress = new InetSocketAddress(dstHost, dstPort);
+			Router.terminal = terminal;
+			Router.dstAddress = new InetSocketAddress(dstHost, dstPort);
+			Router.port = new InetSocketAddress(dstHost, srcPort);
+			if (srcPort == 50012)
+				Router.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
+			else
+				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
 			socket = new DatagramSocket(srcPort);
 			listener.go();
 		} catch (java.lang.Exception e) {
@@ -25,39 +32,30 @@ public class Router extends Node {
 			byte[] data;
 			byte[] buffer;
 			data = packet.getData();
-			DatagramPacket response;
 			switch (data[TYPE_POS]) {
 			case TYPE_ACK:
 				terminal.println("Connected to Controller");
 				break;
 			case USER:
+				terminal.println("Packet received from user");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
-				terminal.println("Packet received from user");
 				data = new byte[HEADER_LENGTH];
 				data[TYPE_POS] = TYPE_ACK;
 				data[ACKCODE_POS] = ACK_ALLOK;
-				response = new DatagramPacket(data, data.length);
+				DatagramPacket response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());
 				socket.send(response);
 				this.notify();
-//				SocketAddress next = getNextRouterAdd(this);
-//				if (next != null)
-//					forwardPacket(content, next);
-//				else {
-//					InetSocketAddress endUser = new InetSocketAddress(USER2_PORT);
-//					forwardPacket(content, endUser);
-//				}
-				InetSocketAddress endUser = new InetSocketAddress(USER2_PORT);
-				forwardPacket(content, endUser);
+				forwardPacket(content);
 				break;
 			case ROUTER:
+				terminal.println("Packet received from router");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
-				terminal.println("Packet received");
-				forwardPacket(content, getNextRouterAdd(this));
+				forwardPacket(content);
 				break;
 			default:
 				buffer = new byte[data[LENGTH_POS]];
@@ -79,7 +77,7 @@ public class Router extends Node {
 		return null;
 	}
 	
-	public void forwardPacket(String contentString, SocketAddress add) throws Exception {
+	public void forwardPacket(String contentString) throws Exception {
 		byte[] data = null;
 		byte[] content = contentString.getBytes();
 		DatagramPacket packet = null;
@@ -91,7 +89,7 @@ public class Router extends Node {
 		
 		terminal.println("Forwarding packet...");
 		packet = new DatagramPacket(data, data.length);
-		packet.setSocketAddress(add);
+		packet.setSocketAddress(nextPort);
 		socket.send(packet);
 	}
 	
@@ -117,6 +115,8 @@ public class Router extends Node {
 			for (int i = 0; i < NO_OF_ROUTERS; i++) {
 				Terminal terminal = new Terminal("Router " + (i + 1));
 				Router router = new Router(terminal, DEFAULT_DST_NODE, CONTROLLER_PORT, FIRST_ROUTER_PORT + i);
+				//TODO 
+				System.out.println(Router.dstAddress + " - " + Router.nextPort);
 				router.contactController();
 			}
 		} catch (java.lang.Exception e) {
