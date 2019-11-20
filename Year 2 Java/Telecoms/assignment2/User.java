@@ -17,7 +17,7 @@ public class User extends Node {
 	}
 
 	@Override
-	public void onReceipt(DatagramPacket packet) {
+	public synchronized void onReceipt(DatagramPacket packet) {
 		String content;
 		byte[] data;
 		byte[] buffer;

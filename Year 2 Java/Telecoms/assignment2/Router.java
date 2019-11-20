@@ -79,15 +79,6 @@ public class Router extends Node {
 		}
 	}
 	
-	public SocketAddress getNextRouterAdd(Router current) {
-		for (int i = 0; i < Controller.connectedRouters.size(); i++) {
-			if (Controller.connectedRouters.get(i) == dstAddress) {
-				return Controller.connectedRouters.get(i + 1);
-			}
-		}
-		return null;
-	}
-	
 	public void forwardPacket(String contentString) throws Exception {
 		byte[] data = null;
 		byte[] content = contentString.getBytes();
