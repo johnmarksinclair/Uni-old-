@@ -34,7 +34,7 @@ public class Controller extends Node {
 				content = new String(buffer);
 				if (!content.contentEquals("")) terminal.println("Message received: " + content);
 				data = new byte[HEADER_LENGTH];
-				data[TYPE_POS] = TYPE_ACK;
+				data[TYPE_POS] = CONNECT_ACK;
 				data[ACKCODE_POS] = ACK_ALLOK;
 				response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());

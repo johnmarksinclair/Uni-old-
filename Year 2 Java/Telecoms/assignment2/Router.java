@@ -14,7 +14,7 @@ public class Router extends Node {
 			Router.terminal = terminal;
 			Router.dstAddress = new InetSocketAddress(dstHost, dstPort);
 			Router.port = new InetSocketAddress(dstHost, srcPort);
-			if (srcPort == 50012)
+			if (srcPort == LAST_ROUTER_PORT)
 				Router.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
 			else
 				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
@@ -32,9 +32,13 @@ public class Router extends Node {
 			byte[] data;
 			byte[] buffer;
 			data = packet.getData();
+			DatagramPacket response;
 			switch (data[TYPE_POS]) {
-			case TYPE_ACK:
+			case CONNECT_ACK:
 				terminal.println("Connected to Controller");
+				break;
+			case TYPE_ACK:
+				terminal.println("Received by router " + packet.getPort());
 				break;
 			case USER:
 				terminal.println("Packet received from user");
@@ -44,7 +48,7 @@ public class Router extends Node {
 				data = new byte[HEADER_LENGTH];
 				data[TYPE_POS] = TYPE_ACK;
 				data[ACKCODE_POS] = ACK_ALLOK;
-				DatagramPacket response = new DatagramPacket(data, data.length);
+				response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());
 				socket.send(response);
 				this.notify();
@@ -55,6 +59,13 @@ public class Router extends Node {
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
+				data = new byte[HEADER_LENGTH];
+				data[TYPE_POS] = TYPE_ACK;
+				data[ACKCODE_POS] = ACK_ALLOK;
+				response = new DatagramPacket(data, data.length);
+				response.setSocketAddress(packet.getSocketAddress());
+				socket.send(response);
+				this.notify();
 				forwardPacket(content);
 				break;
 			default:
@@ -115,8 +126,6 @@ public class Router extends Node {
 			for (int i = 0; i < NO_OF_ROUTERS; i++) {
 				Terminal terminal = new Terminal("Router " + (i + 1));
 				Router router = new Router(terminal, DEFAULT_DST_NODE, CONTROLLER_PORT, FIRST_ROUTER_PORT + i);
-				//TODO 
-				System.out.println(Router.dstAddress + " - " + Router.nextPort);
 				router.contactController();
 			}
 		} catch (java.lang.Exception e) {
