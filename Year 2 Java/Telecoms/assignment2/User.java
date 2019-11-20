@@ -5,19 +5,15 @@ import java.net.*;
 import assignment1.Terminal;
 
 public class User extends Node {
-	
+
 	Terminal terminal;
 	InetSocketAddress dstAddress;
-	
-	User (Terminal terminal, String dstHost, int dstPort, int srcPort) {
-		try {
-			this.terminal = terminal;
-			dstAddress = new InetSocketAddress(dstHost, dstPort);
-			socket = new DatagramSocket(srcPort);
-			listener.go();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
+
+	User(Terminal terminal, String dstHost, int dstPort, int srcPort) throws Exception {
+		this.terminal = terminal;
+		dstAddress = new InetSocketAddress(dstHost, dstPort);
+		socket = new DatagramSocket(srcPort);
+		listener.go();
 	}
 
 	@Override
@@ -29,7 +25,7 @@ public class User extends Node {
 		data = packet.getData();
 		switch (data[TYPE_POS]) {
 		case TYPE_ACK:
-			terminal.println("Packet received by router");
+			terminal.println("Packet received by router: " + packet.getPort());
 			break;
 		case ROUTER:
 			buffer = new byte[data[LENGTH_POS]];
@@ -41,7 +37,7 @@ public class User extends Node {
 			terminal.println("Unexpected packet" + packet.toString());
 		}
 	}
-	
+
 	public void sendMessage() throws Exception {
 		byte[] data = null;
 		byte[] buffer = null;
@@ -61,12 +57,12 @@ public class User extends Node {
 			socket.send(packet);
 		}
 	}
-	
+
 	public synchronized void start() throws Exception {
 		terminal.println("Waiting for contact");
 		this.wait();
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		Terminal terminal1 = new Terminal("User 1");
 		Terminal terminal2 = new Terminal("User 2");
