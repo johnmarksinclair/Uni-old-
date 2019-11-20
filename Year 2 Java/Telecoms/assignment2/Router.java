@@ -49,7 +49,8 @@ public class Router extends Node {
 				break;
 			case USER1:
 			case USER2:
-				terminal.println("Received packet from user");
+				//terminal.println("Received packet from user");
+				System.out.println("Received packet from user");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
@@ -59,11 +60,12 @@ public class Router extends Node {
 				response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());
 				socket.send(response);
-				this.notify();
+				//this.notify();
 				forwardPacket(content);
 				break;
 			case ROUTER:
-				terminal.println("Received packet from router");
+				//terminal.println("Received packet from router");
+				System.out.println("Received packet from router");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
@@ -73,7 +75,7 @@ public class Router extends Node {
 				response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());
 				socket.send(response);
-				this.notify();
+				//this.notify();
 				forwardPacket(content);
 				break;
 			default:
@@ -99,7 +101,8 @@ public class Router extends Node {
 		
 		packet = new DatagramPacket(data, data.length);
 		packet.setSocketAddress(nextPort);
-		terminal.println("Forwarding packet to port " + packet.getPort());
+		terminal.println("Forwarding packet to port: " + packet.getPort());
+		System.out.println("Forwarding to: " + packet.getPort());
 		socket.send(packet);
 	}
 	
