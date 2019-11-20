@@ -6,7 +6,7 @@ import java.util.*;
 public class Controller extends Node {
 	
 	Terminal terminal;
-	InetSocketAddress dstAddress;
+	public static InetSocketAddress dstAddress;
 	public static ArrayList<SocketAddress> connectedRouters = new ArrayList<SocketAddress>();
 	
 	Controller(Terminal terminal, int port) {

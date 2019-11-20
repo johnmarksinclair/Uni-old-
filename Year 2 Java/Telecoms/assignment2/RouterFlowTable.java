@@ -1,5 +1,13 @@
 package assignment2;
 
-public class RouterFlowTable {
+import java.util.*;
 
+public class RouterFlowTable {
+	
+	ArrayList<User> dest = new ArrayList<User>();
+	ArrayList<Integer> destPort = new ArrayList<Integer>();
+	
+	RouterFlowTable() {
+		
+	}
 }

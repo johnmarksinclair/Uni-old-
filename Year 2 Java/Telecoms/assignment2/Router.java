@@ -4,20 +4,27 @@ import java.net.*;
 
 public class Router extends Node {
 	
-	public static Terminal terminal;
+	Terminal terminal;
 	public static InetSocketAddress dstAddress;
+	public static InetSocketAddress prevPort;
 	public static InetSocketAddress port;
 	public static InetSocketAddress nextPort;
 
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
-			Router.terminal = terminal;
+			this.terminal = terminal;
 			Router.dstAddress = new InetSocketAddress(dstHost, dstPort);
 			Router.port = new InetSocketAddress(dstHost, srcPort);
-			if (srcPort == LAST_ROUTER_PORT)
-				Router.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
-			else
+			if (srcPort == FIRST_ROUTER_PORT) {
+				Router.prevPort = new InetSocketAddress(dstHost, USER1_PORT);
 				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
+			} else if (srcPort == LAST_ROUTER_PORT) {
+				Router.prevPort = new InetSocketAddress(dstHost, srcPort-1);
+				Router.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
+			} else {
+				Router.prevPort = new InetSocketAddress(dstHost, srcPort-1);
+				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
+			}
 			socket = new DatagramSocket(srcPort);
 			listener.go();
 		} catch (java.lang.Exception e) {
@@ -40,8 +47,9 @@ public class Router extends Node {
 			case TYPE_ACK:
 				terminal.println("Received by router " + packet.getPort());
 				break;
-			case USER:
-				terminal.println("Packet received from user");
+			case USER1:
+			case USER2:
+				terminal.println("Received packet from user");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
@@ -55,7 +63,7 @@ public class Router extends Node {
 				forwardPacket(content);
 				break;
 			case ROUTER:
-				terminal.println("Packet received from router");
+				terminal.println("Received packet from router");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
@@ -79,7 +87,7 @@ public class Router extends Node {
 		}
 	}
 	
-	public void forwardPacket(String contentString) throws Exception {
+	public synchronized void forwardPacket(String contentString) throws Exception {
 		byte[] data = null;
 		byte[] content = contentString.getBytes();
 		DatagramPacket packet = null;
@@ -89,15 +97,15 @@ public class Router extends Node {
 		data[LENGTH_POS] = (byte) content.length;
 		System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
 		
-		terminal.println("Forwarding packet...");
 		packet = new DatagramPacket(data, data.length);
 		packet.setSocketAddress(nextPort);
+		terminal.println("Forwarding packet to port " + packet.getPort());
 		socket.send(packet);
 	}
 	
-	public void contactController() throws Exception {
+	public synchronized void contactController() throws Exception {
 		byte[] data = null;
-		String input = "Hello";
+		String input = "Connect me";
 		byte[] message = input.getBytes();
 		DatagramPacket packet = null;
 		
