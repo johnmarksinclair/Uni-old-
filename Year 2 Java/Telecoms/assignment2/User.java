@@ -8,14 +8,14 @@ public class User extends Node {
 
 	Terminal terminal;
 	InetSocketAddress dstAddress;
-	int port;
+	InetSocketAddress myAdd;
 
 	User(Terminal terminal, String dstHost, int dstPort, int srcPort) throws Exception {
 		this.terminal = terminal;
 		dstAddress = new InetSocketAddress(dstHost, dstPort);
 		socket = new DatagramSocket(srcPort);
-		this.port = srcPort;
-		terminal.println("My port: " + this.port);
+		this.myAdd = new InetSocketAddress(dstHost, srcPort);
+		terminal.println("My Socket Address: " + this.myAdd);
 		listener.go();
 	}
 
@@ -63,7 +63,7 @@ public class User extends Node {
 		buffer = input.getBytes();
 		if (!new String(buffer).equals("")) {
 			data = new byte[HEADER_LENGTH + buffer.length];
-			if (this.port == USER1_PORT)
+			if (this.myAdd == new InetSocketAddress("localhost", USER1_PORT))
 				data[TYPE_POS] = USER1;
 			else
 				data[TYPE_POS] = USER2;
@@ -85,7 +85,7 @@ public class User extends Node {
 		Terminal terminal1 = new Terminal("User 1");
 		Terminal terminal2 = new Terminal("User 2");
 		User user1 = new User(terminal1, DEFAULT_DST_NODE, FIRST_ROUTER_PORT, USER1_PORT);
-		User user2 = new User(terminal2, DEFAULT_DST_NODE, FIRST_ROUTER_PORT, USER2_PORT);
+		User user2 = new User(terminal2, DEFAULT_DST_NODE, LAST_ROUTER_PORT, USER2_PORT);
 		while (true) {
 			user1.sendMessage();
 			user2.sendMessage();

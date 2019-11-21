@@ -8,11 +8,14 @@ public class Controller extends Node {
 	Terminal terminal;
 	public static InetSocketAddress dstAddress;
 	public static ArrayList<SocketAddress> connectedRouters = new ArrayList<SocketAddress>();
+	InetSocketAddress myAdd;
 	
 	Controller(Terminal terminal, int port) {
 		try {
 			this.terminal = terminal;
 			socket = new DatagramSocket(port);
+			myAdd = new InetSocketAddress("localhost", port);
+			terminal.println("My Socket Address: " + myAdd);
 			listener.go();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

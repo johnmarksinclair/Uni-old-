@@ -6,27 +6,27 @@ public class Router extends Node {
 	
 	Terminal terminal;
 	InetSocketAddress dstAddress;
-	InetSocketAddress prevPort;
-	InetSocketAddress port;
-	InetSocketAddress nextPort;
+	InetSocketAddress prevAdd;
+	InetSocketAddress myAdd;
+	InetSocketAddress nextAdd;
 
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
 			this.terminal = terminal;
 			this.dstAddress = new InetSocketAddress(dstHost, dstPort);
-			this.port = new InetSocketAddress(dstHost, srcPort);
+			this.myAdd = new InetSocketAddress(dstHost, srcPort);
 			if (srcPort == FIRST_ROUTER_PORT) {
-				this.prevPort = new InetSocketAddress(dstHost, USER1_PORT);
-				this.nextPort = new InetSocketAddress(dstHost, srcPort+1);
-				terminal.println("My port: " + this.port);
+				this.prevAdd = new InetSocketAddress(dstHost, USER1_PORT);
+				this.nextAdd = new InetSocketAddress(dstHost, srcPort+1);
+				terminal.println("My Socket Address: " + this.myAdd);
 			} else if (srcPort == LAST_ROUTER_PORT) {
-				this.prevPort = new InetSocketAddress(dstHost, srcPort-1);
-				this.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
-				terminal.println("My port: " + this.port);
+				this.prevAdd = new InetSocketAddress(dstHost, srcPort-1);
+				this.nextAdd = new InetSocketAddress(dstHost, USER2_PORT);
+				terminal.println("My Socket Address: " + this.myAdd);
 			} else {
-				this.prevPort = new InetSocketAddress(dstHost, srcPort-1);
-				this.nextPort = new InetSocketAddress(dstHost, srcPort+1);
-				terminal.println("My port: " + this.port);
+				this.prevAdd = new InetSocketAddress(dstHost, srcPort-1);
+				this.nextAdd = new InetSocketAddress(dstHost, srcPort+1);
+				terminal.println("My Socket Address: " + this.myAdd);
 			}
 			socket = new DatagramSocket(srcPort);
 			listener.go();
@@ -104,7 +104,7 @@ public class Router extends Node {
 		System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
 		
 		packet = new DatagramPacket(data, data.length);
-		packet.setSocketAddress(nextPort);
+		packet.setSocketAddress(nextAdd);
 		if (packet.getPort() == USER1_PORT)
 			terminal.println("Forwarding packet to User " + (packet.getPort() - USER2_PORT + 1) + "...");
 		else if (packet.getPort() == USER2_PORT)
