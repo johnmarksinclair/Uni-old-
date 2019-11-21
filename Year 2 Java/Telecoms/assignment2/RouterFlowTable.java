@@ -5,14 +5,9 @@ import java.util.*;
 public class RouterFlowTable {
 	
 	ArrayList<Hop> hops;
-	int dest;
-	int in;
-	int out;
 	
-	RouterFlowTable(int dest, int in, int out) {
-		this.dest = dest;
-		this.in = in;
-		this.out = out;
+	RouterFlowTable() {
+		hops = new ArrayList<Hop>();
 	}
 	
 	public class Hop {
@@ -26,5 +21,13 @@ public class RouterFlowTable {
 			this.in = in;
 			this.out = out;
 		}
+		
+		public int getOut() {
+			return this.out;
+		}
+	}
+	
+	public void addHop(int dest, int in, int out) {
+		hops.add(new Hop(dest, in, out));
 	}
 }

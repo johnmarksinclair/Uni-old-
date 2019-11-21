@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 public class ControllerFlowTable {
 
-	ArrayList<Route> routes = new ArrayList<Route>();
+	ArrayList<Route> routes;
 	int src;
 	int dest;
 
 	ControllerFlowTable(int src, int dest) {
+		routes = new ArrayList<Route>();
 		this.src = src;
 		this.dest = dest;
 		Route route = new Route(src, dest);

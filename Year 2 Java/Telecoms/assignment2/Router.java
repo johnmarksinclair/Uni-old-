@@ -5,7 +5,7 @@ import java.net.*;
 public class Router extends Node {
 	
 	Terminal terminal;
-	InetSocketAddress dstAddress;
+	InetSocketAddress controlAdd;
 	InetSocketAddress prevAdd;
 	InetSocketAddress myAdd;
 	InetSocketAddress nextAdd;
@@ -13,7 +13,7 @@ public class Router extends Node {
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
 			this.terminal = terminal;
-			this.dstAddress = new InetSocketAddress(dstHost, dstPort);
+			this.controlAdd = new InetSocketAddress(dstHost, dstPort);
 			this.myAdd = new InetSocketAddress(dstHost, srcPort);
 			if (srcPort == FIRST_ROUTER_PORT) {
 				this.prevAdd = new InetSocketAddress(dstHost, USER1_PORT);
@@ -42,15 +42,14 @@ public class Router extends Node {
 			byte[] data;
 			byte[] buffer;
 			data = packet.getData();
-			DatagramPacket response;
 			switch (data[TYPE_POS]) {
-			case CONNECT_ACK:
+			case TYPE_CONNECT_ACK:
 				terminal.println("Connected to Controller");
 				break;
 			case TYPE_ACK:
 				terminal.println("Received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				break;
-			case USER_ACK:
+			case TYPE_USER_ACK:
 				terminal.println("Received by User " + (packet.getPort() - USER1_PORT + 1));
 				break;
 			case USER1:
@@ -59,13 +58,7 @@ public class Router extends Node {
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
-				data = new byte[HEADER_LENGTH];
-				data[TYPE_POS] = TYPE_ACK;
-				data[ACKCODE_POS] = ACK_ALLOK;
-				response = new DatagramPacket(data, data.length);
-				response.setSocketAddress(packet.getSocketAddress());
-				socket.send(response);
-				this.notify();
+				socket.send(createPacket(packet, TYPE_ACK, null));
 				forwardPacket(content);
 				break;
 			case ROUTER:
@@ -73,13 +66,7 @@ public class Router extends Node {
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
-				data = new byte[HEADER_LENGTH];
-				data[TYPE_POS] = TYPE_ACK;
-				data[ACKCODE_POS] = ACK_ALLOK;
-				response = new DatagramPacket(data, data.length);
-				response.setSocketAddress(packet.getSocketAddress());
-				socket.send(response);
-				this.notify();
+				socket.send(createPacket(packet, TYPE_ACK, null));
 				forwardPacket(content);
 				break;
 			case CONTROLLER:
@@ -121,15 +108,13 @@ public class Router extends Node {
 		String input = "Connect me";
 		byte[] message = input.getBytes();
 		DatagramPacket packet = null;
-		
 		data = new byte[HEADER_LENGTH + message.length];
 		data[TYPE_POS] = ROUTER_CON;
 		data[LENGTH_POS] = (byte) message.length;
 		System.arraycopy(message, 0, data, HEADER_LENGTH, message.length);
-
 		terminal.println("Connecting to Controller...");
 		packet = new DatagramPacket(data, data.length);
-		packet.setSocketAddress(dstAddress);
+		packet.setSocketAddress(controlAdd);
 		socket.send(packet);
 	}
 

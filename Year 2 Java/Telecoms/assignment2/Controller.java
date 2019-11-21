@@ -4,45 +4,34 @@ import java.net.*;
 import java.util.*;
 
 public class Controller extends Node {
-	
+
 	Terminal terminal;
 	public static InetSocketAddress dstAddress;
 	public static ArrayList<SocketAddress> connectedRouters = new ArrayList<SocketAddress>();
 	InetSocketAddress myAdd;
-	
+	ControllerFlowTable flowTable;
+
 	Controller(Terminal terminal, int port) {
 		try {
 			this.terminal = terminal;
-			socket = new DatagramSocket(port);
-			myAdd = new InetSocketAddress("localhost", port);
+			this.socket = new DatagramSocket(port);
+			this.myAdd = new InetSocketAddress(DEFAULT_DST_NODE, port);
 			terminal.println("My Socket Address: " + myAdd);
-			ControllerFlowTable table = new ControllerFlowTable(USER1, USER2);
-			listener.go();
-		} catch (java.lang.Exception e) {
+			this.flowTable = new ControllerFlowTable(USER1, USER2);
+			this.listener.go();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public synchronized void onReceipt(DatagramPacket packet) {
 		try {
-			String content;
-			byte[] data;
-			byte[] buffer;
-			data = packet.getData();
-			DatagramPacket response;
+			byte[] data = packet.getData();
 			switch (data[TYPE_POS]) {
 			case ROUTER_CON:
-				buffer = new byte[data[LENGTH_POS]];
-				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
-				content = new String(buffer);
-				if (!content.contentEquals("")) terminal.println("Connect request from Router " + (packet.getPort()-FIRST_ROUTER_PORT+1));
-				data = new byte[HEADER_LENGTH];
-				data[TYPE_POS] = CONNECT_ACK;
-				data[ACKCODE_POS] = ACK_ALLOK;
-				response = new DatagramPacket(data, data.length);
-				response.setSocketAddress(packet.getSocketAddress());
-				socket.send(response);
+				terminal.println("Connect request from Router");
+				socket.send(createPacket(packet, TYPE_CONNECT_ACK, null));
 				SocketAddress address = packet.getSocketAddress();
 				if (!checkRouters(address)) {
 					connectedRouters.add(packet.getSocketAddress());
@@ -58,7 +47,7 @@ public class Controller extends Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean checkRouters(SocketAddress add) {
 		for (int i = 0; i < connectedRouters.size(); i++) {
 			if (connectedRouters.get(i).equals(add)) {
@@ -67,19 +56,14 @@ public class Controller extends Node {
 		}
 		return false;
 	}
-	
+
 	public synchronized void start() throws Exception {
-		terminal.println("Waiting for contact");
+		terminal.println("Waiting for contact...");
 		this.wait();
 	}
-	
+
 	public static void main(String[] args) {
-		try {
-			Terminal terminal = new Terminal("Controller");
-			Controller controller = new Controller(terminal, CONTROLLER_PORT);
-			controller.start();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
+		Terminal terminal = new Terminal("Controller");
+		Controller controller = new Controller(terminal, CONTROLLER_PORT);
 	}
 }

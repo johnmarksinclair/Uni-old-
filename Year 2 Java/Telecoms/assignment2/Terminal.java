@@ -141,7 +141,7 @@ public class Terminal {
 	public synchronized String read(String prompt) {
 		String input;
 		panel.setPrompt(prompt);
-		input=  panel.read();
+		input = panel.read();
 		panel.setPrompt("");
 		return input;
 	}

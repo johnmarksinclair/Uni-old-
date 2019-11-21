@@ -27,7 +27,6 @@ public class User extends Node {
 			byte[] buffer;
 
 			data = packet.getData();
-			DatagramPacket response;
 			switch (data[TYPE_POS]) {
 			case TYPE_ACK:
 				terminal.println("Packet received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
@@ -36,13 +35,7 @@ public class User extends Node {
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
-				data = new byte[HEADER_LENGTH];
-				data[TYPE_POS] = USER_ACK;
-				data[ACKCODE_POS] = ACK_ALLOK;
-				response = new DatagramPacket(data, data.length);
-				response.setSocketAddress(packet.getSocketAddress());
-				socket.send(response);
-				this.notify();
+				socket.send(createPacket(packet, TYPE_USER_ACK, null));
 				terminal.println("Packet received: " + content);
 				break;
 			default:
