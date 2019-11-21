@@ -9,7 +9,6 @@ public class Router extends Node {
 	InetSocketAddress prevPort;
 	InetSocketAddress port;
 	InetSocketAddress nextPort;
-	//hi
 
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
