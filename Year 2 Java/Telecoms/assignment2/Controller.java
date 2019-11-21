@@ -28,11 +28,11 @@ public class Controller extends Node {
 			data = packet.getData();
 			DatagramPacket response;
 			switch (data[TYPE_POS]) {
-			case ROUTER:
+			case ROUTER_CON:
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
-				if (!content.contentEquals("")) terminal.println("Message received: " + content);
+				if (!content.contentEquals("")) terminal.println("Connect request from Router " + (packet.getPort()-FIRST_ROUTER_PORT+1));
 				data = new byte[HEADER_LENGTH];
 				data[TYPE_POS] = CONNECT_ACK;
 				data[ACKCODE_POS] = ACK_ALLOK;
