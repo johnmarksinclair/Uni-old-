@@ -4,12 +4,33 @@ import java.util.ArrayList;
 
 public class ControllerFlowTable {
 	
-	ArrayList<User> src = new ArrayList<User>();
-	ArrayList<User> dest = new ArrayList<User>();
-	ArrayList<Router> router = new ArrayList<Router>();
-	ArrayList<Integer> destPort = new ArrayList<Integer>();
+	ArrayList<Route> routes = new ArrayList<Route>();
+	int src;
+	int dest;
 	
 	ControllerFlowTable() {
 		
+	}
+	
+	public class Route {
+		
+		ArrayList<Hop> hops = new ArrayList<Hop>();
+		int src;
+		int dest;
+		
+		Route() {
+			
+		}
+	}
+	
+	public class Hop {
+		
+		int routerPort;
+		int in;
+		int out;
+		
+		Hop() {
+			
+		}
 	}
 }
