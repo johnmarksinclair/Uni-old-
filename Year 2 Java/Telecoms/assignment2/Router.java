@@ -5,31 +5,29 @@ import java.net.*;
 public class Router extends Node {
 	
 	Terminal terminal;
-	public static InetSocketAddress dstAddress;
-	public static InetSocketAddress prevPort;
-	public static InetSocketAddress port;
-	public static InetSocketAddress nextPort;
+	InetSocketAddress dstAddress;
+	InetSocketAddress prevPort;
+	InetSocketAddress port;
+	InetSocketAddress nextPort;
+	//hi
 
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
 			this.terminal = terminal;
-			Router.dstAddress = new InetSocketAddress(dstHost, dstPort);
-			Router.port = new InetSocketAddress(dstHost, srcPort);
+			this.dstAddress = new InetSocketAddress(dstHost, dstPort);
+			this.port = new InetSocketAddress(dstHost, srcPort);
 			if (srcPort == FIRST_ROUTER_PORT) {
-				Router.prevPort = new InetSocketAddress(dstHost, USER1_PORT);
-				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
-				terminal.println("My port: " + Router.port);
-				terminal.println("Next port: " + Router.nextPort);
+				this.prevPort = new InetSocketAddress(dstHost, USER1_PORT);
+				this.nextPort = new InetSocketAddress(dstHost, srcPort+1);
+				terminal.println("My port: " + this.port);
 			} else if (srcPort == LAST_ROUTER_PORT) {
-				Router.prevPort = new InetSocketAddress(dstHost, srcPort-1);
-				Router.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
-				terminal.println("My port: " + Router.port);
-				terminal.println("Next port: " + Router.nextPort);
+				this.prevPort = new InetSocketAddress(dstHost, srcPort-1);
+				this.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
+				terminal.println("My port: " + this.port);
 			} else {
-				Router.prevPort = new InetSocketAddress(dstHost, srcPort-1);
-				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
-				terminal.println("My port: " + Router.port);
-				terminal.println("Next port: " + Router.nextPort);
+				this.prevPort = new InetSocketAddress(dstHost, srcPort-1);
+				this.nextPort = new InetSocketAddress(dstHost, srcPort+1);
+				terminal.println("My port: " + this.port);
 			}
 			socket = new DatagramSocket(srcPort);
 			listener.go();
@@ -51,13 +49,14 @@ public class Router extends Node {
 				terminal.println("Connected to Controller");
 				break;
 			case TYPE_ACK:
-				terminal.println("Received by router " + packet.getPort());
-				System.out.println("Received by router " + packet.getPort());
+				terminal.println("Received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+				break;
+			case USER_ACK:
+				terminal.println("Received by User " + (packet.getPort() - USER1_PORT + 1));
 				break;
 			case USER1:
 			case USER2:
-				terminal.println("Received packet from user");
-				System.out.println("Received packet from user");
+				terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
@@ -71,8 +70,7 @@ public class Router extends Node {
 				forwardPacket(content);
 				break;
 			case ROUTER:
-				terminal.println("Received packet from router");
-				System.out.println("Received packet from router");
+				terminal.println("Received packet from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 				content = new String(buffer);
@@ -108,8 +106,12 @@ public class Router extends Node {
 		
 		packet = new DatagramPacket(data, data.length);
 		packet.setSocketAddress(nextPort);
-		terminal.println("Forwarding packet to port: " + packet.getPort());
-		System.out.println("Forwarding packet to port: " + packet.getPort() + " Next port: " + nextPort);
+		if (packet.getPort() == USER1_PORT)
+			terminal.println("Forwarding packet to User " + (packet.getPort() - USER2_PORT + 1) + "...");
+		else if (packet.getPort() == USER2_PORT)
+			terminal.println("Forwarding packet to User " + (packet.getPort() - USER1_PORT + 1) + "...");
+		else
+			terminal.println("Forwarding packet to Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1) + "...");
 		socket.send(packet);
 	}
 	
