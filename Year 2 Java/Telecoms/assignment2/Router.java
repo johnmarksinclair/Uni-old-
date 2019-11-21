@@ -18,12 +18,18 @@ public class Router extends Node {
 			if (srcPort == FIRST_ROUTER_PORT) {
 				Router.prevPort = new InetSocketAddress(dstHost, USER1_PORT);
 				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
+				terminal.println("My port: " + Router.port);
+				terminal.println("Next port: " + Router.nextPort);
 			} else if (srcPort == LAST_ROUTER_PORT) {
 				Router.prevPort = new InetSocketAddress(dstHost, srcPort-1);
 				Router.nextPort = new InetSocketAddress(dstHost, USER2_PORT);
+				terminal.println("My port: " + Router.port);
+				terminal.println("Next port: " + Router.nextPort);
 			} else {
 				Router.prevPort = new InetSocketAddress(dstHost, srcPort-1);
 				Router.nextPort = new InetSocketAddress(dstHost, srcPort+1);
+				terminal.println("My port: " + Router.port);
+				terminal.println("Next port: " + Router.nextPort);
 			}
 			socket = new DatagramSocket(srcPort);
 			listener.go();
@@ -46,10 +52,11 @@ public class Router extends Node {
 				break;
 			case TYPE_ACK:
 				terminal.println("Received by router " + packet.getPort());
+				System.out.println("Received by router " + packet.getPort());
 				break;
 			case USER1:
 			case USER2:
-				//terminal.println("Received packet from user");
+				terminal.println("Received packet from user");
 				System.out.println("Received packet from user");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
@@ -60,11 +67,11 @@ public class Router extends Node {
 				response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());
 				socket.send(response);
-				//this.notify();
+				this.notify();
 				forwardPacket(content);
 				break;
 			case ROUTER:
-				//terminal.println("Received packet from router");
+				terminal.println("Received packet from router");
 				System.out.println("Received packet from router");
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
@@ -75,7 +82,7 @@ public class Router extends Node {
 				response = new DatagramPacket(data, data.length);
 				response.setSocketAddress(packet.getSocketAddress());
 				socket.send(response);
-				//this.notify();
+				this.notify();
 				forwardPacket(content);
 				break;
 			default:
@@ -102,7 +109,7 @@ public class Router extends Node {
 		packet = new DatagramPacket(data, data.length);
 		packet.setSocketAddress(nextPort);
 		terminal.println("Forwarding packet to port: " + packet.getPort());
-		System.out.println("Forwarding to: " + packet.getPort());
+		System.out.println("Forwarding packet to port: " + packet.getPort() + " Next port: " + nextPort);
 		socket.send(packet);
 	}
 	
@@ -113,7 +120,7 @@ public class Router extends Node {
 		DatagramPacket packet = null;
 		
 		data = new byte[HEADER_LENGTH + message.length];
-		data[TYPE_POS] = ROUTER;
+		data[TYPE_POS] = ROUTER_CON;
 		data[LENGTH_POS] = (byte) message.length;
 		System.arraycopy(message, 0, data, HEADER_LENGTH, message.length);
 
