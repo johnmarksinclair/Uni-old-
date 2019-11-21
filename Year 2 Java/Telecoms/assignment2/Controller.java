@@ -16,6 +16,7 @@ public class Controller extends Node {
 			socket = new DatagramSocket(port);
 			myAdd = new InetSocketAddress("localhost", port);
 			terminal.println("My Socket Address: " + myAdd);
+			ControllerFlowTable table = new ControllerFlowTable(USER1, USER2);
 			listener.go();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -47,6 +48,8 @@ public class Controller extends Node {
 					connectedRouters.add(packet.getSocketAddress());
 					System.out.println("Current router addresses:\n" + connectedRouters.toString());
 				}
+				break;
+			case ROUTER:
 				break;
 			default:
 				terminal.println("Unexpected packet" + packet.toString());

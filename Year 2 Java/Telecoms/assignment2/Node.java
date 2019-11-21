@@ -31,7 +31,8 @@ public abstract class Node {
 	static final byte USER1 = 15;
 	static final byte USER2 = 16;
 	static final byte ROUTER = 17;
-	static final byte ROUTER_CON = 17;
+	static final byte ROUTER_CON = 18;
+	static final byte CONTROLLER = 19;
 	
 
 	DatagramSocket socket;

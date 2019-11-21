@@ -82,6 +82,8 @@ public class Router extends Node {
 				this.notify();
 				forwardPacket(content);
 				break;
+			case CONTROLLER:
+				break;
 			default:
 				buffer = new byte[data[LENGTH_POS]];
 				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);

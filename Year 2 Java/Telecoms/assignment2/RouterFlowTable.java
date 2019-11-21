@@ -4,10 +4,27 @@ import java.util.*;
 
 public class RouterFlowTable {
 	
-	ArrayList<User> dest = new ArrayList<User>();
-	ArrayList<Integer> destPort = new ArrayList<Integer>();
+	ArrayList<Hop> hops;
+	int dest;
+	int in;
+	int out;
 	
-	RouterFlowTable() {
-		
+	RouterFlowTable(int dest, int in, int out) {
+		this.dest = dest;
+		this.in = in;
+		this.out = out;
+	}
+	
+	public class Hop {
+
+		int dest;
+		int in;
+		int out;
+
+		Hop(int dest, int in, int out) {
+			this.dest = dest;
+			this.in = in;
+			this.out = out;
+		}
 	}
 }
