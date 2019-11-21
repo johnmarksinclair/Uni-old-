@@ -18,16 +18,14 @@ public class Router extends Node {
 			if (srcPort == FIRST_ROUTER_PORT) {
 				this.prevAdd = new InetSocketAddress(dstHost, USER1_PORT);
 				this.nextAdd = new InetSocketAddress(dstHost, srcPort+1);
-				terminal.println("My Socket Address: " + this.myAdd);
 			} else if (srcPort == LAST_ROUTER_PORT) {
 				this.prevAdd = new InetSocketAddress(dstHost, srcPort-1);
 				this.nextAdd = new InetSocketAddress(dstHost, USER2_PORT);
-				terminal.println("My Socket Address: " + this.myAdd);
 			} else {
 				this.prevAdd = new InetSocketAddress(dstHost, srcPort-1);
 				this.nextAdd = new InetSocketAddress(dstHost, srcPort+1);
-				terminal.println("My Socket Address: " + this.myAdd);
 			}
+			//terminal.println("My Socket Address: " + this.myAdd);
 			socket = new DatagramSocket(srcPort);
 			listener.go();
 		} catch (java.lang.Exception e) {
@@ -44,47 +42,32 @@ public class Router extends Node {
 				terminal.println("Connected to Controller");
 				break;
 			case TYPE_ACK:
-				terminal.println("Received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+				terminal.println("Successfully forwarded to Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				break;
 			case TYPE_USER_ACK:
-				terminal.println("Received by User " + (packet.getPort() - USER1_PORT + 1));
+				terminal.println("Successfully forwarded to User " + (packet.getPort() - USER1_PORT + 1));
 				break;
 			case USER1:
 			case USER2:
 				terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
-				socket.send(createPacket(packet, TYPE_ACK, null));
-				forwardPacket(getContent(packet));
+				terminal.println("Forwarding...");
+				socket.send(createPacket(packet, TYPE_ACK, null, null));
+				socket.send(createPacket(packet, ROUTER, getByteContent(packet), nextAdd));
 				break;
 			case ROUTER:
 				terminal.println("Received packet from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				socket.send(createPacket(packet, TYPE_ACK, null));
-				forwardPacket(getContent(packet));
+				terminal.println("Forwarding...");
+				socket.send(createPacket(packet, TYPE_ACK, null, null));
+				socket.send(createPacket(packet, ROUTER, getByteContent(packet), nextAdd));
 				break;
 			case CONTROLLER:
 				break;
 			default:
-				terminal.println("Message received: " + getContent(packet));
+				terminal.println("Message received: " + getStringContent(packet));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public synchronized void forwardPacket(String contentString) throws Exception {
-		byte[] content = contentString.getBytes();
-		byte[] data = new byte[HEADER_LENGTH + content.length];
-		data[TYPE_POS] = ROUTER;
-		data[LENGTH_POS] = (byte) content.length;
-		System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
-		DatagramPacket packet = new DatagramPacket(data, data.length);
-		packet.setSocketAddress(nextAdd);
-		if (packet.getPort() == USER1_PORT)
-			terminal.println("Forwarding packet to User " + (packet.getPort() - USER2_PORT + 1) + "...");
-		else if (packet.getPort() == USER2_PORT)
-			terminal.println("Forwarding packet to User " + (packet.getPort() - USER1_PORT + 1) + "...");
-		else
-			terminal.println("Forwarding packet to Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1) + "...");
-		socket.send(packet);
 	}
 	
 	public synchronized void contactController() throws Exception {

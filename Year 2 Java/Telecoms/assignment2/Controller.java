@@ -16,7 +16,7 @@ public class Controller extends Node {
 			this.terminal = terminal;
 			this.socket = new DatagramSocket(port);
 			this.myAdd = new InetSocketAddress(DEFAULT_DST_NODE, port);
-			terminal.println("My Socket Address: " + myAdd);
+			//terminal.println("My Socket Address: " + myAdd);
 			this.flowTable = new ControllerFlowTable(USER1, USER2);
 			this.listener.go();
 		} catch (Exception e) {
@@ -31,7 +31,7 @@ public class Controller extends Node {
 			switch (data[TYPE_POS]) {
 			case ROUTER_CON:
 				terminal.println("Connect request from Router");
-				socket.send(createPacket(packet, TYPE_CONNECT_ACK, null));
+				socket.send(createPacket(packet, TYPE_CONNECT_ACK, null, null));
 				SocketAddress address = packet.getSocketAddress();
 				if (!checkRouters(address)) {
 					connectedRouters.add(packet.getSocketAddress());

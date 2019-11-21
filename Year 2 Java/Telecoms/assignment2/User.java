@@ -15,7 +15,7 @@ public class User extends Node {
 		dstAddress = new InetSocketAddress(dstHost, dstPort);
 		socket = new DatagramSocket(srcPort);
 		this.myAdd = new InetSocketAddress(dstHost, srcPort);
-		terminal.println("My Socket Address: " + this.myAdd);
+		//terminal.println("My Socket Address: " + this.myAdd);
 		listener.go();
 	}
 
@@ -28,8 +28,8 @@ public class User extends Node {
 				terminal.println("Packet received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				break;
 			case ROUTER:
-				socket.send(createPacket(packet, TYPE_USER_ACK, null));
-				terminal.println("Packet received: " + getContent(packet));
+				socket.send(createPacket(packet, TYPE_USER_ACK, null, null));
+				terminal.println("Packet received: " + getStringContent(packet));
 				break;
 			default:
 				terminal.println("Unexpected packet" + packet.toString());

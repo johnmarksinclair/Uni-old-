@@ -2,6 +2,7 @@ package assignment2;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 
@@ -69,7 +70,7 @@ public abstract class Node {
 		}
 	}
 	
-	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content) {
+	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, InetSocketAddress nextAdd) {
 		byte[] data = packet.getData();
 		DatagramPacket response;
 		byte[] buffer = new byte[data[LENGTH_POS]];
@@ -85,6 +86,14 @@ public abstract class Node {
 		case TYPE_USER_ACK:
 			data[TYPE_POS] = TYPE_USER_ACK;
 			break;
+		case ROUTER:
+			data = new byte[HEADER_LENGTH + content.length];
+			data[TYPE_POS] = ROUTER;
+			data[LENGTH_POS] = (byte) content.length;
+			System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
+			DatagramPacket message = new DatagramPacket(data, data.length);
+			message.setSocketAddress(nextAdd);
+			return message;
 		}
 		data[ACKCODE_POS] = ACK_ALLOK;
 		response = new DatagramPacket(data, data.length);
@@ -92,7 +101,14 @@ public abstract class Node {
 		return response;
 	}
 	
-	public String getContent(DatagramPacket packet) {
+	public byte[] getByteContent(DatagramPacket packet) {
+		byte[] data = packet.getData();
+		byte[] buffer = new byte[data[LENGTH_POS]];
+		System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
+		return buffer;
+	}
+	
+	public String getStringContent(DatagramPacket packet) {
 		String content;
 		byte[] data;
 		byte[] buffer;
