@@ -22,21 +22,14 @@ public class User extends Node {
 	@Override
 	public synchronized void onReceipt(DatagramPacket packet) {
 		try {
-			String content;
-			byte[] data;
-			byte[] buffer;
-
-			data = packet.getData();
+			byte[] data = packet.getData();
 			switch (data[TYPE_POS]) {
 			case TYPE_ACK:
 				terminal.println("Packet received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				break;
 			case ROUTER:
-				buffer = new byte[data[LENGTH_POS]];
-				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
-				content = new String(buffer);
 				socket.send(createPacket(packet, TYPE_USER_ACK, null));
-				terminal.println("Packet received: " + content);
+				terminal.println("Packet received: " + getContent(packet));
 				break;
 			default:
 				terminal.println("Unexpected packet" + packet.toString());

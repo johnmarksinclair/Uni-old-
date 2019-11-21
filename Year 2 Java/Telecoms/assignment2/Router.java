@@ -38,10 +38,7 @@ public class Router extends Node {
 	@Override
 	public synchronized void onReceipt(DatagramPacket packet) {
 		try {
-			String content;
-			byte[] data;
-			byte[] buffer;
-			data = packet.getData();
+			byte[] data = packet.getData();
 			switch (data[TYPE_POS]) {
 			case TYPE_CONNECT_ACK:
 				terminal.println("Connected to Controller");
@@ -55,27 +52,18 @@ public class Router extends Node {
 			case USER1:
 			case USER2:
 				terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
-				buffer = new byte[data[LENGTH_POS]];
-				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
-				content = new String(buffer);
 				socket.send(createPacket(packet, TYPE_ACK, null));
-				forwardPacket(content);
+				forwardPacket(getContent(packet));
 				break;
 			case ROUTER:
 				terminal.println("Received packet from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				buffer = new byte[data[LENGTH_POS]];
-				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
-				content = new String(buffer);
 				socket.send(createPacket(packet, TYPE_ACK, null));
-				forwardPacket(content);
+				forwardPacket(getContent(packet));
 				break;
 			case CONTROLLER:
 				break;
 			default:
-				buffer = new byte[data[LENGTH_POS]];
-				System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
-				content = new String(buffer);
-				terminal.println("Message received: " + content);
+				terminal.println("Message received: " + getContent(packet));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,16 +71,12 @@ public class Router extends Node {
 	}
 	
 	public synchronized void forwardPacket(String contentString) throws Exception {
-		byte[] data = null;
 		byte[] content = contentString.getBytes();
-		DatagramPacket packet = null;
-
-		data = new byte[HEADER_LENGTH + content.length];
+		byte[] data = new byte[HEADER_LENGTH + content.length];
 		data[TYPE_POS] = ROUTER;
 		data[LENGTH_POS] = (byte) content.length;
 		System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
-		
-		packet = new DatagramPacket(data, data.length);
+		DatagramPacket packet = new DatagramPacket(data, data.length);
 		packet.setSocketAddress(nextAdd);
 		if (packet.getPort() == USER1_PORT)
 			terminal.println("Forwarding packet to User " + (packet.getPort() - USER2_PORT + 1) + "...");

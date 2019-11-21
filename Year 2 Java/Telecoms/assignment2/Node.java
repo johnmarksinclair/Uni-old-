@@ -91,4 +91,15 @@ public abstract class Node {
 		response.setSocketAddress(packet.getSocketAddress());
 		return response;
 	}
+	
+	public String getContent(DatagramPacket packet) {
+		String content;
+		byte[] data;
+		byte[] buffer;
+		data = packet.getData();
+		buffer = new byte[data[LENGTH_POS]];
+		System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
+		content = new String(buffer);
+		return content;
+	}
 }
