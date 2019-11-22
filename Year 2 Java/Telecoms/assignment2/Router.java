@@ -109,7 +109,7 @@ public class Router extends Node {
 	public RouterFlowTable getTable(DatagramPacket packet) {
 		RouterFlowTable table = new RouterFlowTable();
 		String content = getStringContent(packet);
-		System.out.println(content);
+		System.out.println(terminal.name + " Flow Table: " + content);
 		String[] partitioned = content.split(Pattern.quote("."));
 		int dest, in, out;
 		int i = 0;
