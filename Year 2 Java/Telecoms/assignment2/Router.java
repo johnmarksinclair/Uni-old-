@@ -8,7 +8,6 @@ public class Router extends Node {
 	
 	Terminal terminal;
 	InetSocketAddress controlAdd;
-	InetSocketAddress prevAdd;
 	InetSocketAddress myAdd;
 	InetSocketAddress nextAdd;
 	RouterFlowTable myTable;
@@ -70,6 +69,7 @@ public class Router extends Node {
 		}
 	}
 	
+	//TODO
 	public void updateInfo() {
 		this.nextAdd = new InetSocketAddress(DEFAULT_DST_NODE, myTable.hops.get(0).getOut());
 	}

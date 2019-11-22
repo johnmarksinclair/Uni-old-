@@ -22,6 +22,10 @@ public class RouterFlowTable {
 			this.out = out;
 		}
 		
+		public int getIn() {
+			return this.in;
+		}
+		
 		public int getOut() {
 			return this.out;
 		}
