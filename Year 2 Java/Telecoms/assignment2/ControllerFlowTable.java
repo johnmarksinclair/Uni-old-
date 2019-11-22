@@ -29,9 +29,9 @@ public class ControllerFlowTable {
 				two = new Hop(Node.FIRST_ROUTER_PORT + 1, Node.FIRST_ROUTER_PORT, Node.FIRST_ROUTER_PORT + 2);
 				three = new Hop(Node.FIRST_ROUTER_PORT + 2, Node.FIRST_ROUTER_PORT + 1, destPort);
 			} else { // U2 -> U1
-				one = new Hop(Node.FIRST_ROUTER_PORT + 2, srcPort, Node.FIRST_ROUTER_PORT + 1);
-				two = new Hop(Node.FIRST_ROUTER_PORT + 1, Node.FIRST_ROUTER_PORT + 2, Node.FIRST_ROUTER_PORT);
-				three = new Hop(Node.FIRST_ROUTER_PORT, Node.FIRST_ROUTER_PORT + 1, destPort);
+				one = new Hop(Node.LAST_ROUTER_PORT, srcPort, Node.LAST_ROUTER_PORT - 1);
+				two = new Hop(Node.LAST_ROUTER_PORT - 1, Node.LAST_ROUTER_PORT, Node.FIRST_ROUTER_PORT);
+				three = new Hop(Node.FIRST_ROUTER_PORT, Node.LAST_ROUTER_PORT - 1, destPort);
 			}
 			hops.add(one);
 			hops.add(two);

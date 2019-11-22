@@ -5,20 +5,22 @@ import java.net.*;
 import java.util.regex.Pattern;
 
 public class Router extends Node {
-	
+
 	Terminal terminal;
 	InetSocketAddress controlAdd;
 	InetSocketAddress myAdd;
 	InetSocketAddress nextAdd;
 	RouterFlowTable myTable;
 	byte[] content;
+	static int from = 0;
+	boolean hasReq = false;
 
 	Router(Terminal terminal, String dstHost, int dstPort, int srcPort) {
 		try {
 			this.terminal = terminal;
 			this.controlAdd = new InetSocketAddress(dstHost, dstPort);
 			this.myAdd = new InetSocketAddress(dstHost, srcPort);
-			//terminal.println("My Socket Address: " + this.myAdd);
+			// terminal.println("My Socket Address: " + this.myAdd);
 			socket = new DatagramSocket(srcPort);
 			listener.go();
 		} catch (java.lang.Exception e) {
@@ -41,25 +43,51 @@ public class Router extends Node {
 				terminal.println("Successfully forwarded to User " + (packet.getPort() - USER1_PORT + 1));
 				break;
 			case USER1:
-			case USER2:
+				Router.from = 0;
 				content = getByteContent(packet);
 				terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
 				socket.send(createPacket(packet, TYPE_ACK, null, null)); // send acknowledgement
-				terminal.println("Requesting flow table...");
-				socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+				if (!hasReq) {
+					terminal.println("Requesting flow table...");
+					socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+					this.hasReq = true;
+				} else {
+					updateInfo();
+					forwardPacket(packet);
+				}
+				break;
+			case USER2:
+				Router.from = 1;
+				content = getByteContent(packet);
+				terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
+				socket.send(createPacket(packet, TYPE_ACK, null, null)); // send acknowledgement
+				if (!hasReq) {
+					terminal.println("Requesting flow table...");
+					socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+					this.hasReq = true;
+				} else {
+					updateInfo();
+					forwardPacket(packet);
+				}
 				break;
 			case ROUTER:
 				content = getByteContent(packet);
 				terminal.println("Received packet from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				socket.send(createPacket(packet, TYPE_ACK, null, null));
-				terminal.println("Requesting flow table...");
-				socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+				socket.send(createPacket(packet, TYPE_ACK, null, null)); // send acknowledgement
+				if (!hasReq) {
+					terminal.println("Requesting flow table...");
+					socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+					hasReq = true;
+				} else {
+					updateInfo();
+					forwardPacket(packet);
+				}
 				break;
 			case CONTROLLER:
 				terminal.println("Received routing info");
 				myTable = getTable(packet);
 				updateInfo();
-				forwardPackage(packet);
+				forwardPacket(packet);
 				break;
 			default:
 				terminal.println("Message received: " + getStringContent(packet));
@@ -68,34 +96,33 @@ public class Router extends Node {
 			e.printStackTrace();
 		}
 	}
-	
-	//TODO
+
 	public void updateInfo() {
-		this.nextAdd = new InetSocketAddress(DEFAULT_DST_NODE, myTable.hops.get(0).getOut());
+		this.nextAdd = new InetSocketAddress(DEFAULT_DST_NODE, myTable.hops.get(from).getOut());
 	}
-	
-	public void forwardPackage(DatagramPacket packet) throws IOException {
+
+	public void forwardPacket(DatagramPacket packet) throws IOException {
 		terminal.println("Forwarding...");
 		socket.send(createPacket(packet, ROUTER, content, nextAdd));
 	}
-	
+
 	public RouterFlowTable getTable(DatagramPacket packet) {
 		RouterFlowTable table = new RouterFlowTable();
 		String content = getStringContent(packet);
-		//System.out.println(content);
+		System.out.println(content);
 		String[] partitioned = content.split(Pattern.quote("."));
 		int dest, in, out;
 		int i = 0;
 		while (i < partitioned.length) {
 			dest = Integer.valueOf(partitioned[i]);
-			in = Integer.valueOf(partitioned[i+1]);
-			out = Integer.valueOf(partitioned[i+2]);
+			in = Integer.valueOf(partitioned[i + 1]);
+			out = Integer.valueOf(partitioned[i + 2]);
 			table.addHop(dest, in, out);
 			i += 3;
 		}
 		return table;
 	}
-	
+
 	public synchronized void contactController() throws Exception {
 		byte[] data = null;
 		String input = "Connect me";
