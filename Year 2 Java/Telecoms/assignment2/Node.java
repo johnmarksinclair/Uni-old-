@@ -34,6 +34,7 @@ public abstract class Node {
 	static final byte ROUTER = 17;
 	static final byte ROUTER_CON = 18;
 	static final byte CONTROLLER = 19;
+	static final byte FEA_REQ = 20;
 
 	DatagramSocket socket;
 	Listener listener;
@@ -70,9 +71,10 @@ public abstract class Node {
 		}
 	}
 	
-	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, InetSocketAddress nextAdd) {
+	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, InetSocketAddress add) {
 		byte[] data = packet.getData();
-		DatagramPacket response;
+		DatagramPacket response = new DatagramPacket(data, data.length);
+		DatagramPacket message;
 		byte[] buffer = new byte[data[LENGTH_POS]];
 		System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 		data = new byte[HEADER_LENGTH];
@@ -91,13 +93,28 @@ public abstract class Node {
 			data[TYPE_POS] = ROUTER;
 			data[LENGTH_POS] = (byte) content.length;
 			System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
-			DatagramPacket message = new DatagramPacket(data, data.length);
-			message.setSocketAddress(nextAdd);
+			message = new DatagramPacket(data, data.length);
+			message.setSocketAddress(add);
 			return message;
+		case CONTROLLER:
+			data = new byte[HEADER_LENGTH + content.length];
+			data[TYPE_POS] = CONTROLLER;
+			data[LENGTH_POS] = (byte) content.length;
+			System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
+			message = new DatagramPacket(data, data.length);
+			message.setSocketAddress(packet.getSocketAddress());
+			return message;
+		case FEA_REQ:
+			data[TYPE_POS] = FEA_REQ;
+			break;
 		}
 		data[ACKCODE_POS] = ACK_ALLOK;
 		response = new DatagramPacket(data, data.length);
-		response.setSocketAddress(packet.getSocketAddress());
+		if (data[TYPE_POS] == FEA_REQ) {
+			response.setSocketAddress(new InetSocketAddress(DEFAULT_DST_NODE, CONTROLLER_PORT));
+		} else {
+			response.setSocketAddress(packet.getSocketAddress());
+		}
 		return response;
 	}
 	
