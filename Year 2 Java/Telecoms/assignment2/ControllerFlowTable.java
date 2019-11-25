@@ -5,15 +5,13 @@ import java.util.ArrayList;
 public class ControllerFlowTable {
 
 	ArrayList<Route> routes;
-	int src;
-	int dest;
 
-	ControllerFlowTable(int src, int dest) {
+	ControllerFlowTable() {
 		routes = new ArrayList<Route>();
-		this.src = src;
-		this.dest = dest;
-		Route route = new Route(src, dest);
-		routes.add(route);
+	}
+	
+	public void addRoute(int src, int dest) {
+		routes.add(new Route(src, dest));
 	}
 
 	public class Route {
@@ -25,9 +23,16 @@ public class ControllerFlowTable {
 		Route(int srcPort, int destPort) {
 			this.src = srcPort;
 			this.dest = destPort;
-			Hop one = new Hop(Node.FIRST_ROUTER_PORT, srcPort, Node.FIRST_ROUTER_PORT + 1);
-			Hop two = new Hop(Node.FIRST_ROUTER_PORT + 1, Node.FIRST_ROUTER_PORT, Node.FIRST_ROUTER_PORT + 2);
-			Hop three = new Hop(Node.FIRST_ROUTER_PORT + 2, Node.FIRST_ROUTER_PORT + 1, destPort);
+			Hop one, two, three;
+			if (srcPort == Node.USER1_PORT) { // U1 -> U2
+				one = new Hop(Node.FIRST_ROUTER_PORT, srcPort, Node.FIRST_ROUTER_PORT + 1);
+				two = new Hop(Node.FIRST_ROUTER_PORT + 1, Node.FIRST_ROUTER_PORT, Node.FIRST_ROUTER_PORT + 2);
+				three = new Hop(Node.FIRST_ROUTER_PORT + 2, Node.FIRST_ROUTER_PORT + 1, destPort);
+			} else { // U2 -> U1
+				one = new Hop(Node.LAST_ROUTER_PORT, srcPort, Node.LAST_ROUTER_PORT - 1);
+				two = new Hop(Node.LAST_ROUTER_PORT - 1, Node.LAST_ROUTER_PORT, Node.FIRST_ROUTER_PORT);
+				three = new Hop(Node.FIRST_ROUTER_PORT, Node.LAST_ROUTER_PORT - 1, destPort);
+			}
 			hops.add(one);
 			hops.add(two);
 			hops.add(three);

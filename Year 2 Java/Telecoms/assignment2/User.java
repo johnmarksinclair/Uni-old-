@@ -25,11 +25,11 @@ public class User extends Node {
 			byte[] data = packet.getData();
 			switch (data[TYPE_POS]) {
 			case TYPE_ACK:
-				terminal.println("Packet received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+				//terminal.println("Message received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				break;
 			case ROUTER:
 				socket.send(createPacket(packet, TYPE_USER_ACK, null, null));
-				terminal.println("Packet received: " + getStringContent(packet));
+				terminal.println("Message received: " + getStringContent(packet));
 				break;
 			default:
 				terminal.println("Unexpected packet" + packet.toString());
@@ -49,13 +49,13 @@ public class User extends Node {
 		buffer = input.getBytes();
 		if (!new String(buffer).equals("")) {
 			data = new byte[HEADER_LENGTH + buffer.length];
-			if (this.myAdd == new InetSocketAddress("localhost", USER1_PORT))
+			if (this.myAdd.equals(new InetSocketAddress("localhost", USER1_PORT)))
 				data[TYPE_POS] = USER1;
 			else
 				data[TYPE_POS] = USER2;
 			data[LENGTH_POS] = (byte) buffer.length;
 			System.arraycopy(buffer, 0, data, HEADER_LENGTH, buffer.length);
-			terminal.println("Sending packet...");
+			terminal.println("Sending message...");
 			packet = new DatagramPacket(data, data.length);
 			packet.setSocketAddress(dstAddress);
 			socket.send(packet);

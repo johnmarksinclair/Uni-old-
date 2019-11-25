@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 public class Terminal {
 
 	TerminalPanel panel;
+	public String name;
 
 	/**
 	 * This class provides the internal fields of the Terminal window, an output field, a label and an input field.
@@ -107,6 +108,7 @@ public class Terminal {
 	 * @param name Name of the terminal window.
 	 */
 	public Terminal(String name) {
+		this.name = name;
 		JFrame frame = new JFrame(name);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(panel= new TerminalPanel());

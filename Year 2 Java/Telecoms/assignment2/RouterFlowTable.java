@@ -22,6 +22,10 @@ public class RouterFlowTable {
 			this.out = out;
 		}
 		
+//		public int getIn() {
+//			return this.in;
+//		}
+		
 		public int getOut() {
 			return this.out;
 		}
@@ -29,5 +33,13 @@ public class RouterFlowTable {
 	
 	public void addHop(int dest, int in, int out) {
 		hops.add(new Hop(dest, in, out));
+	}
+	
+	public static String toString(RouterFlowTable table) {
+		String message = "";
+		for (int i = 0; i < table.hops.size(); i++) {
+			message += table.hops.get(i).dest + "." + table.hops.get(i).in + "." + table.hops.get(i).out + ".";
+		}
+		return message;
 	}
 }
