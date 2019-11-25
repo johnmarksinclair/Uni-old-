@@ -25,7 +25,7 @@ public class User extends Node {
 			byte[] data = packet.getData();
 			switch (data[TYPE_POS]) {
 			case TYPE_ACK:
-				//terminal.println("Message received by Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+				terminal.println("Message sent");
 				break;
 			case ROUTER:
 				socket.send(createPacket(packet, TYPE_USER_ACK, null, null));
