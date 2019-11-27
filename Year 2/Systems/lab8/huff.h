@@ -20,7 +20,6 @@ struct huffchar {
   } u;
 };
 
-
 struct huffcoder {
   int freqs[NUM_CHARS];
   int code_lengths[NUM_CHARS];
@@ -54,4 +53,9 @@ void huffcoder_encode(struct huffcoder * this, char * input_filename,
 void huffcoder_decode(struct huffcoder * this, char * input_filename,
 		      char * output_filename);
 
+void finishTree(struct huffchar ** nodes, struct huffcoder * this);
+struct huffchar * getSmallest(struct huffchar ** nodes, int size);
+void devCodes(struct huffchar * c, int length, unsigned long long code, struct huffcoder * this);
+
 #endif // HUFF_H
+

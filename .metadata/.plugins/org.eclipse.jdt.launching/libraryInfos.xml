@@ -38,4 +38,23 @@
 <entry path="C:\Program Files\Java\jdk1.8.0_131\jre\lib\endorsed"/>
 </endorsedDirs>
 </libraryInfo>
+<libraryInfo home="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre" version="1.8.0_202">
+<bootpath>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\resources.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\rt.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\sunrsasign.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\jsse.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\jce.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\charsets.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\jfr.jar"/>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\classes"/>
+</bootpath>
+<extensionDirs>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\ext"/>
+<entry path="C:\WINDOWS\Sun\Java\lib\ext"/>
+</extensionDirs>
+<endorsedDirs>
+<entry path="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre\lib\endorsed"/>
+</endorsedDirs>
+</libraryInfo>
 </libraryInfos>
