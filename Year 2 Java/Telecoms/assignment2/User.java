@@ -9,13 +9,15 @@ public class User extends Node {
 	Terminal terminal;
 	InetSocketAddress dstAddress;
 	InetSocketAddress myAdd;
+	byte myType;
 
-	User(Terminal terminal, String dstHost, int dstPort, int srcPort) throws Exception {
+	User(Terminal terminal, String dstHost, int dstPort, int srcPort, byte type) throws Exception {
 		this.terminal = terminal;
 		dstAddress = new InetSocketAddress(dstHost, dstPort);
 		socket = new DatagramSocket(srcPort);
 		this.myAdd = new InetSocketAddress(dstHost, srcPort);
-		//terminal.println("My Socket Address: " + this.myAdd);
+		this.myType = type;
+		// terminal.println("My Socket Address: " + this.myAdd);
 		listener.go();
 	}
 
@@ -40,25 +42,11 @@ public class User extends Node {
 	}
 
 	public void sendMessage() throws Exception {
-		byte[] data = null;
-		byte[] buffer = null;
-		DatagramPacket packet = null;
-		String input;
-
-		input = terminal.read("Message: ");
-		buffer = input.getBytes();
+		String input = terminal.read("Message: ");
+		byte[] buffer = input.getBytes();
 		if (!new String(buffer).equals("")) {
-			data = new byte[HEADER_LENGTH + buffer.length];
-			if (this.myAdd.equals(new InetSocketAddress("localhost", USER1_PORT)))
-				data[TYPE_POS] = USER1;
-			else
-				data[TYPE_POS] = USER2;
-			data[LENGTH_POS] = (byte) buffer.length;
-			System.arraycopy(buffer, 0, data, HEADER_LENGTH, buffer.length);
 			terminal.println("Sending message...");
-			packet = new DatagramPacket(data, data.length);
-			packet.setSocketAddress(dstAddress);
-			socket.send(packet);
+			socket.send(createPacket(null, this.myType, buffer, dstAddress));
 		}
 	}
 
@@ -70,8 +58,8 @@ public class User extends Node {
 	public static void main(String[] args) throws Exception {
 		Terminal terminal1 = new Terminal("User 1");
 		Terminal terminal2 = new Terminal("User 2");
-		User user1 = new User(terminal1, DEFAULT_DST_NODE, FIRST_ROUTER_PORT, USER1_PORT);
-		User user2 = new User(terminal2, DEFAULT_DST_NODE, LAST_ROUTER_PORT, USER2_PORT);
+		User user1 = new User(terminal1, DEFAULT_DST_NODE, FIRST_ROUTER_PORT, USER1_PORT, USER1);
+		User user2 = new User(terminal2, DEFAULT_DST_NODE, LAST_ROUTER_PORT, USER2_PORT, USER2);
 		while (true) {
 			user1.sendMessage();
 			user2.sendMessage();
