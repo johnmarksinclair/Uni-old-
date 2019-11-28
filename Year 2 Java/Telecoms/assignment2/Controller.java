@@ -1,13 +1,11 @@
 package assignment2;
 
 import java.net.*;
-import java.util.*;
 
 public class Controller extends Node {
 
 	Terminal terminal;
 	public static InetSocketAddress dstAddress;
-	public static ArrayList<Integer> feaReqs = new ArrayList<Integer>();
 	InetSocketAddress myAdd;
 	ControllerFlowTable flowTable;
 
@@ -30,26 +28,13 @@ public class Controller extends Node {
 			socket.send(createPacket(packet, TYPE_CONNECT_ACK, null, null));
 			break;
 		case FEA_REQ:
-			if (!checkFeaReq(packet.getPort())) {
-				terminal.println("Feature request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				feaReqs.add(packet.getPort());
-				RouterFlowTable routerTable = tailorTable(packet.getPort());
-				String tailoredTable = routerTable.toString();
-				socket.send(createPacket(packet, CONTROLLER, tailoredTable.getBytes(), packet.getSocketAddress()));
-			}
+			terminal.println("Feature request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+			String tailoredTable = tailorTable(packet.getPort()).toString();
+			socket.send(createPacket(packet, CONTROLLER, tailoredTable.getBytes(), packet.getSocketAddress()));
 			break;
 		default:
 			terminal.println("Unexpected packet" + packet.toString());
 		}
-	}
-
-	public boolean checkFeaReq(int port) {
-		for (int i = 0; i < feaReqs.size(); i++) {
-			if (port == feaReqs.get(i)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public RouterFlowTable tailorTable(int port) {
