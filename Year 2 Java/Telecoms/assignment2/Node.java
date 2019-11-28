@@ -1,9 +1,6 @@
 package assignment2;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class Node {
@@ -50,18 +47,15 @@ public abstract class Node {
 	public abstract void onReceipt(DatagramPacket packet);
 
 	class Listener extends Thread {
-
 		public void go() {
 			latch.countDown();
 		}
-
 		public void run() {
 			try {
 				latch.await();
 				while (true) {
 					DatagramPacket packet = new DatagramPacket(new byte[PACKETSIZE], PACKETSIZE);
 					socket.receive(packet);
-
 					onReceipt(packet);
 				}
 			} catch (Exception e) {
@@ -71,50 +65,41 @@ public abstract class Node {
 		}
 	}
 	
-	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, InetSocketAddress add) {
-		byte[] data = packet.getData();
-		DatagramPacket response = new DatagramPacket(data, data.length);
+	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, SocketAddress add) {
+		byte[] data = null;
+		DatagramPacket response;
+		if (packet != null) {
+			data = packet.getData();
+			response = new DatagramPacket(data, data.length);
+			byte[] buffer = new byte[data[LENGTH_POS]];
+			System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
+			data = new byte[HEADER_LENGTH];
+		}
 		DatagramPacket message;
-		byte[] buffer = new byte[data[LENGTH_POS]];
-		System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
-		data = new byte[HEADER_LENGTH];
 		switch (type) {
 		case TYPE_ACK:
-			data[TYPE_POS] = TYPE_ACK;
-			break;
 		case TYPE_CONNECT_ACK:
-			data[TYPE_POS] = TYPE_CONNECT_ACK;
-			break;
 		case TYPE_USER_ACK:
-			data[TYPE_POS] = TYPE_USER_ACK;
+		case FEA_REQ:
+			data[TYPE_POS] = type;
 			break;
 		case ROUTER:
+		case ROUTER_CON:
+		case CONTROLLER:
 			data = new byte[HEADER_LENGTH + content.length];
-			data[TYPE_POS] = ROUTER;
+			data[TYPE_POS] = type;
 			data[LENGTH_POS] = (byte) content.length;
 			System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
 			message = new DatagramPacket(data, data.length);
 			message.setSocketAddress(add);
 			return message;
-		case CONTROLLER:
-			data = new byte[HEADER_LENGTH + content.length];
-			data[TYPE_POS] = CONTROLLER;
-			data[LENGTH_POS] = (byte) content.length;
-			System.arraycopy(content, 0, data, HEADER_LENGTH, content.length);
-			message = new DatagramPacket(data, data.length);
-			message.setSocketAddress(packet.getSocketAddress());
-			return message;
-		case FEA_REQ:
-			data[TYPE_POS] = FEA_REQ;
-			break;
 		}
 		data[ACKCODE_POS] = ACK_ALLOK;
 		response = new DatagramPacket(data, data.length);
-		if (data[TYPE_POS] == FEA_REQ) {
+		if (data[TYPE_POS] == FEA_REQ)
 			response.setSocketAddress(new InetSocketAddress(DEFAULT_DST_NODE, CONTROLLER_PORT));
-		} else {
+		else
 			response.setSocketAddress(packet.getSocketAddress());
-		}
 		return response;
 	}
 	
