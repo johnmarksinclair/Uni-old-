@@ -12,19 +12,15 @@ public class Controller extends Node {
 	InetSocketAddress myAdd;
 	ControllerFlowTable flowTable;
 
-	Controller(Terminal terminal, int port) {
-		try {
-			this.terminal = terminal;
-			this.socket = new DatagramSocket(port);
-			this.myAdd = new InetSocketAddress(DEFAULT_DST_NODE, port);
-			this.listener.go();
-			//terminal.println("My Socket Address: " + myAdd);
-			this.flowTable = new ControllerFlowTable();
-			this.flowTable.addRoute(USER1_PORT, USER2_PORT); // U1 -> U2
-			this.flowTable.addRoute(USER2_PORT, USER1_PORT); // U2 -> U1
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	Controller(Terminal terminal, int port) throws Exception {
+		this.terminal = terminal;
+		this.socket = new DatagramSocket(port);
+		this.myAdd = new InetSocketAddress(DEFAULT_DST_NODE, port);
+		this.listener.go();
+		// terminal.println("My Socket Address: " + myAdd);
+		this.flowTable = new ControllerFlowTable();
+		this.flowTable.addRoute(USER1_PORT, USER2_PORT); // U1 -> U2
+		this.flowTable.addRoute(USER2_PORT, USER1_PORT); // U2 -> U1
 	}
 
 	@Override
@@ -33,7 +29,7 @@ public class Controller extends Node {
 			byte[] data = packet.getData();
 			switch (data[TYPE_POS]) {
 			case ROUTER_CON:
-				terminal.println("Connect request from Router " + (packet.getPort()-FIRST_ROUTER_PORT+1));
+				terminal.println("Connect request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 				socket.send(createPacket(packet, TYPE_CONNECT_ACK, null, null));
 				InetSocketAddress address = new InetSocketAddress(DEFAULT_DST_NODE, packet.getPort());
 				if (!checkRouters(address)) {
@@ -43,11 +39,11 @@ public class Controller extends Node {
 				break;
 			case FEA_REQ:
 				if (!checkFeaReq(packet.getPort())) {
-					terminal.println("Feature request from Router " + (packet.getPort()-FIRST_ROUTER_PORT+1));
+					terminal.println("Feature request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 					feaReqs.add(packet.getPort());
 					RouterFlowTable routerTable = tailorTable(packet.getPort());
-					String tailoredTable = RouterFlowTable.toString(routerTable);
-					socket.send(createPacket(packet, CONTROLLER, tailoredTable.getBytes(), null));
+					String tailoredTable = routerTable.toString();
+					socket.send(createPacket(packet, CONTROLLER, tailoredTable.getBytes(), packet.getSocketAddress()));
 				}
 				break;
 			default:
@@ -57,7 +53,7 @@ public class Controller extends Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean checkFeaReq(int port) {
 		for (int i = 0; i < feaReqs.size(); i++) {
 			if (port == feaReqs.get(i)) {
@@ -66,7 +62,7 @@ public class Controller extends Node {
 		}
 		return false;
 	}
-	
+
 	public RouterFlowTable tailorTable(int port) {
 		RouterFlowTable table = new RouterFlowTable();
 		int dest, in, out;
