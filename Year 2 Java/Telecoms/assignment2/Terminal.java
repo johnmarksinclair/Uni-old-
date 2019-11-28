@@ -12,21 +12,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-/**
- * This class provides a terminal window that provides field for concurrent input from the user and output to the user.
- *
- */
 public class Terminal {
 
 	TerminalPanel panel;
 	public String name;
 
-	/**
-	 * This class provides the internal fields of the Terminal window, an output field, a label and an input field.
-	 * The output field can be used for the concurrent printing of Strings. The label is used to print a prompt 
-	 * for the input expected in the input field. The input field can be used to request a String as input from 
-	 * the user.
-	 */
 	public class TerminalPanel extends JPanel implements ActionListener {
 
 		private static final long serialVersionUID = -4404241756143559030L;
@@ -36,9 +26,6 @@ public class Terminal {
 		private JLabel label;
 		private String input;
 
-		/**
-		 * Create the panel.
-		 */
 		public TerminalPanel() {
 			super(new GridBagLayout());
 			
@@ -102,11 +89,6 @@ public class Terminal {
 		}
 	}
 
-	
-	/**
-	 * This constructor establishes a terminal window with a given name.
-	 * @param name Name of the terminal window.
-	 */
 	public Terminal(String name) {
 		this.name = name;
 		JFrame frame = new JFrame(name);
@@ -116,30 +98,14 @@ public class Terminal {
 		frame.pack();
 	}	
 	
-	/**
-	 * This method prints a string to the output field.
-	 * 
-	 * @param output String to print in the output field.
-	 */
 	public void print(String output) {
 		panel.print(output);
 	}
 	
-	/**
-	 * This method prints a string to the output field, followed by a newline.
-	 * 
-	 * @param output String to print in the output field.
-	 */
 	public void println(String output) {
 		panel.println(output);
 	}
 	
-	/**
-	 * This method attempts to get an input from a user in the input field.
-	 * 
-	 * @param prompt String to print before waiting for input
-	 * @return Input from the user
-	 */
 	public synchronized String read(String prompt) {
 		String input;
 		panel.setPrompt(prompt);
