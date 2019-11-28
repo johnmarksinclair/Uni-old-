@@ -12,7 +12,7 @@ public abstract class Node {
 	static final int LENGTH_POS = 1;
 	static final int HEADER_LENGTH = 2;
 	// ports
-	static final String DEFAULT_DST_NODE = "localhost"; // Name of the host for the server
+	static final String DEFAULT_DST_NODE = "localhost";
 	static final int USER1_PORT = 50000;
 	static final int USER2_PORT = 50001;
 	static final int CONTROLLER_PORT = 50005;
@@ -24,7 +24,7 @@ public abstract class Node {
 	static final byte TYPE_ACK = 4;
 	static final byte TYPE_CONNECT_ACK = 5;
 	static final byte TYPE_USER_ACK = 6;
-	static final byte ACK_ALLOK = 10;
+	static final byte ACK_ALLOK = 7;
 	// packet types
 	static final byte USER1 = 15;
 	static final byte USER2 = 16;

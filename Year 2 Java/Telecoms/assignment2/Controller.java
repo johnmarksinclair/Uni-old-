@@ -7,7 +7,6 @@ public class Controller extends Node {
 
 	Terminal terminal;
 	public static InetSocketAddress dstAddress;
-	public static ArrayList<InetSocketAddress> connectedRouters = new ArrayList<InetSocketAddress>();
 	public static ArrayList<Integer> feaReqs = new ArrayList<Integer>();
 	InetSocketAddress myAdd;
 	ControllerFlowTable flowTable;
@@ -17,7 +16,6 @@ public class Controller extends Node {
 		this.socket = new DatagramSocket(port);
 		this.myAdd = new InetSocketAddress(DEFAULT_DST_NODE, port);
 		this.listener.go();
-		// terminal.println("My Socket Address: " + myAdd);
 		this.flowTable = new ControllerFlowTable();
 		this.flowTable.addRoute(USER1_PORT, USER2_PORT); // U1 -> U2
 		this.flowTable.addRoute(USER2_PORT, USER1_PORT); // U2 -> U1
@@ -30,11 +28,6 @@ public class Controller extends Node {
 		case ROUTER_CON:
 			terminal.println("Connect request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
 			socket.send(createPacket(packet, TYPE_CONNECT_ACK, null, null));
-			InetSocketAddress address = new InetSocketAddress(DEFAULT_DST_NODE, packet.getPort());
-			if (!checkRouters(address)) {
-				connectedRouters.add(address);
-				System.out.println("Current router addresses:\n" + connectedRouters.toString());
-			}
 			break;
 		case FEA_REQ:
 			if (!checkFeaReq(packet.getPort())) {
@@ -74,15 +67,6 @@ public class Controller extends Node {
 			}
 		}
 		return table;
-	}
-
-	public static boolean checkRouters(InetSocketAddress add) {
-		for (int i = 0; i < connectedRouters.size(); i++) {
-			if (connectedRouters.get(i).equals(add)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public synchronized void start() throws Exception {
