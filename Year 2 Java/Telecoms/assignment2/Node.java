@@ -44,7 +44,7 @@ public abstract class Node {
 		listener.start();
 	}
 
-	public abstract void onReceipt(DatagramPacket packet);
+	public abstract void onReceipt(DatagramPacket packet) throws Exception;
 
 	class Listener extends Thread {
 		public void go() {

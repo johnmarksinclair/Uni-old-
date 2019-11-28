@@ -24,33 +24,29 @@ public class Controller extends Node {
 	}
 
 	@Override
-	public synchronized void onReceipt(DatagramPacket packet) {
-		try {
-			byte[] data = packet.getData();
-			switch (data[TYPE_POS]) {
-			case ROUTER_CON:
-				terminal.println("Connect request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				socket.send(createPacket(packet, TYPE_CONNECT_ACK, null, null));
-				InetSocketAddress address = new InetSocketAddress(DEFAULT_DST_NODE, packet.getPort());
-				if (!checkRouters(address)) {
-					connectedRouters.add(address);
-					System.out.println("Current router addresses:\n" + connectedRouters.toString());
-				}
-				break;
-			case FEA_REQ:
-				if (!checkFeaReq(packet.getPort())) {
-					terminal.println("Feature request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-					feaReqs.add(packet.getPort());
-					RouterFlowTable routerTable = tailorTable(packet.getPort());
-					String tailoredTable = routerTable.toString();
-					socket.send(createPacket(packet, CONTROLLER, tailoredTable.getBytes(), packet.getSocketAddress()));
-				}
-				break;
-			default:
-				terminal.println("Unexpected packet" + packet.toString());
+	public synchronized void onReceipt(DatagramPacket packet) throws Exception {
+		byte[] data = packet.getData();
+		switch (data[TYPE_POS]) {
+		case ROUTER_CON:
+			terminal.println("Connect request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+			socket.send(createPacket(packet, TYPE_CONNECT_ACK, null, null));
+			InetSocketAddress address = new InetSocketAddress(DEFAULT_DST_NODE, packet.getPort());
+			if (!checkRouters(address)) {
+				connectedRouters.add(address);
+				System.out.println("Current router addresses:\n" + connectedRouters.toString());
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			break;
+		case FEA_REQ:
+			if (!checkFeaReq(packet.getPort())) {
+				terminal.println("Feature request from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+				feaReqs.add(packet.getPort());
+				RouterFlowTable routerTable = tailorTable(packet.getPort());
+				String tailoredTable = routerTable.toString();
+				socket.send(createPacket(packet, CONTROLLER, tailoredTable.getBytes(), packet.getSocketAddress()));
+			}
+			break;
+		default:
+			terminal.println("Unexpected packet" + packet.toString());
 		}
 	}
 

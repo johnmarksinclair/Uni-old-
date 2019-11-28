@@ -2,8 +2,6 @@ package assignment2;
 
 import java.net.*;
 
-import assignment1.Terminal;
-
 public class User extends Node {
 
 	Terminal terminal;
@@ -22,22 +20,18 @@ public class User extends Node {
 	}
 
 	@Override
-	public synchronized void onReceipt(DatagramPacket packet) {
-		try {
-			byte[] data = packet.getData();
-			switch (data[TYPE_POS]) {
-			case TYPE_ACK:
-				terminal.println("Message sent");
-				break;
-			case ROUTER:
-				socket.send(createPacket(packet, TYPE_USER_ACK, null, null));
-				terminal.println("Message received: " + getStringContent(packet));
-				break;
-			default:
-				terminal.println("Unexpected packet" + packet.toString());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	public synchronized void onReceipt(DatagramPacket packet) throws Exception {
+		byte[] data = packet.getData();
+		switch (data[TYPE_POS]) {
+		case TYPE_ACK:
+			terminal.println("Message sent");
+			break;
+		case ROUTER:
+			socket.send(createPacket(packet, TYPE_USER_ACK, null, null));
+			terminal.println("Message received: " + getStringContent(packet));
+			break;
+		default:
+			terminal.println("Unexpected packet" + packet.toString());
 		}
 	}
 

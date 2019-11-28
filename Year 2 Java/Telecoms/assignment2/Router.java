@@ -1,6 +1,6 @@
 package assignment2;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 import java.util.regex.Pattern;
 
@@ -25,53 +25,49 @@ public class Router extends Node {
 	}
 
 	@Override
-	public synchronized void onReceipt(DatagramPacket packet) {
-		try {
-			byte[] data = packet.getData();
-			switch (data[TYPE_POS]) {
-			case TYPE_CONNECT_ACK:
-				terminal.println("Connected to Controller");
-				break;
-			case TYPE_ACK:
-				terminal.println("Successfully forwarded to Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				break;
-			case TYPE_USER_ACK:
-				terminal.println("Successfully forwarded to User " + (packet.getPort() - USER1_PORT + 1));
-				break;
-			case USER1:
-			case USER2:
-			case ROUTER:
-				if (data[TYPE_POS] == ROUTER) {
-					terminal.println("Received packet from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
-				} else {
-					terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
-					if (data[TYPE_POS] == USER1)
-						Router.from = 0;
-					else
-						Router.from = 1;
-				}
-				content = getByteContent(packet);
-				socket.send(createPacket(packet, TYPE_ACK, null, null)); // send acknowledgement
-				if (!hasReq) {
-					terminal.println("Requesting flow table...");
-					socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
-					this.hasReq = true;
-				} else {
-					updateInfo();
-					forwardPacket(packet);
-				}
-				break;
-			case CONTROLLER:
-				terminal.println("Received routing info");
-				myTable = getTable(packet);
+	public synchronized void onReceipt(DatagramPacket packet) throws Exception {
+		byte[] data = packet.getData();
+		switch (data[TYPE_POS]) {
+		case TYPE_CONNECT_ACK:
+			terminal.println("Connected to Controller");
+			break;
+		case TYPE_ACK:
+			terminal.println("Successfully forwarded to Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+			break;
+		case TYPE_USER_ACK:
+			terminal.println("Successfully forwarded to User " + (packet.getPort() - USER1_PORT + 1));
+			break;
+		case USER1:
+		case USER2:
+		case ROUTER:
+			if (data[TYPE_POS] == ROUTER) {
+				terminal.println("Received packet from Router " + (packet.getPort() - FIRST_ROUTER_PORT + 1));
+			} else {
+				terminal.println("Received packet from User " + (packet.getPort() - USER1_PORT + 1));
+				if (data[TYPE_POS] == USER1)
+					Router.from = 0;
+				else
+					Router.from = 1;
+			}
+			content = getByteContent(packet);
+			socket.send(createPacket(packet, TYPE_ACK, null, null)); // send acknowledgement
+			if (!hasReq) {
+				terminal.println("Requesting flow table...");
+				socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+				this.hasReq = true;
+			} else {
 				updateInfo();
 				forwardPacket(packet);
-				break;
-			default:
-				terminal.println("Message received: " + getStringContent(packet));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			break;
+		case CONTROLLER:
+			terminal.println("Received routing info");
+			myTable = getTable(packet);
+			updateInfo();
+			forwardPacket(packet);
+			break;
+		default:
+			terminal.println("Message received: " + getStringContent(packet));
 		}
 	}
 
