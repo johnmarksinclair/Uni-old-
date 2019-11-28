@@ -50,6 +50,7 @@ public abstract class Node {
 		public void go() {
 			latch.countDown();
 		}
+
 		public void run() {
 			try {
 				latch.await();
@@ -64,7 +65,7 @@ public abstract class Node {
 			}
 		}
 	}
-	
+
 	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, SocketAddress add) {
 		byte[] data = null;
 		DatagramPacket response;
@@ -82,10 +83,18 @@ public abstract class Node {
 		case TYPE_USER_ACK:
 		case FEA_REQ:
 			data[TYPE_POS] = type;
-			break;
+			data[ACKCODE_POS] = ACK_ALLOK;
+			response = new DatagramPacket(data, data.length);
+			if (data[TYPE_POS] == FEA_REQ)
+				response.setSocketAddress(new InetSocketAddress(DEFAULT_DST_NODE, CONTROLLER_PORT));
+			else
+				response.setSocketAddress(packet.getSocketAddress());
+			return response;
 		case ROUTER:
 		case ROUTER_CON:
 		case CONTROLLER:
+		case USER1:
+		case USER2:
 			data = new byte[HEADER_LENGTH + content.length];
 			data[TYPE_POS] = type;
 			data[LENGTH_POS] = (byte) content.length;
@@ -93,23 +102,18 @@ public abstract class Node {
 			message = new DatagramPacket(data, data.length);
 			message.setSocketAddress(add);
 			return message;
+		default:
+			return null;
 		}
-		data[ACKCODE_POS] = ACK_ALLOK;
-		response = new DatagramPacket(data, data.length);
-		if (data[TYPE_POS] == FEA_REQ)
-			response.setSocketAddress(new InetSocketAddress(DEFAULT_DST_NODE, CONTROLLER_PORT));
-		else
-			response.setSocketAddress(packet.getSocketAddress());
-		return response;
 	}
-	
+
 	public byte[] getByteContent(DatagramPacket packet) {
 		byte[] data = packet.getData();
 		byte[] buffer = new byte[data[LENGTH_POS]];
 		System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 		return buffer;
 	}
-	
+
 	public String getStringContent(DatagramPacket packet) {
 		String content;
 		byte[] data;
