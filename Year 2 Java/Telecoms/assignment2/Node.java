@@ -69,6 +69,7 @@ public abstract class Node {
 	public DatagramPacket createPacket(DatagramPacket packet, byte type, byte[] content, SocketAddress add) {
 		byte[] data = null;
 		DatagramPacket response;
+		DatagramPacket message;
 		if (packet != null) {
 			data = packet.getData();
 			response = new DatagramPacket(data, data.length);
@@ -76,7 +77,6 @@ public abstract class Node {
 			System.arraycopy(data, HEADER_LENGTH, buffer, 0, buffer.length);
 			data = new byte[HEADER_LENGTH];
 		}
-		DatagramPacket message;
 		switch (type) {
 		case TYPE_ACK:
 		case TYPE_CONNECT_ACK:
