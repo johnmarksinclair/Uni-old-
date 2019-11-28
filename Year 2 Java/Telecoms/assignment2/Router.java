@@ -19,7 +19,6 @@ public class Router extends Node {
 		this.terminal = terminal;
 		this.controlAdd = new InetSocketAddress(dstHost, dstPort);
 		this.myAdd = new InetSocketAddress(dstHost, srcPort);
-		// terminal.println("My Socket Address: " + this.myAdd);
 		socket = new DatagramSocket(srcPort);
 		listener.go();
 	}
@@ -50,10 +49,10 @@ public class Router extends Node {
 					Router.from = 1;
 			}
 			content = getByteContent(packet);
-			socket.send(createPacket(packet, TYPE_ACK, null, null)); // send acknowledgement
+			socket.send(createPacket(packet, TYPE_ACK, null, null));
 			if (!hasReq) {
 				terminal.println("Requesting flow table...");
-				socket.send(createPacket(packet, FEA_REQ, null, null)); // send a feature request
+				socket.send(createPacket(packet, FEA_REQ, null, null));
 				this.hasReq = true;
 			} else {
 				updateInfo();

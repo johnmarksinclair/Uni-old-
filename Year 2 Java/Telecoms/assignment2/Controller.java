@@ -15,8 +15,8 @@ public class Controller extends Node {
 		this.myAdd = new InetSocketAddress(DEFAULT_DST_NODE, port);
 		this.listener.go();
 		this.flowTable = new ControllerFlowTable();
-		this.flowTable.addRoute(USER1_PORT, USER2_PORT); // U1 -> U2
-		this.flowTable.addRoute(USER2_PORT, USER1_PORT); // U2 -> U1
+		this.flowTable.addRoute(USER1_PORT, USER2_PORT);
+		this.flowTable.addRoute(USER2_PORT, USER1_PORT);
 	}
 
 	@Override

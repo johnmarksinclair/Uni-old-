@@ -15,7 +15,6 @@ public class User extends Node {
 		socket = new DatagramSocket(srcPort);
 		this.myAdd = new InetSocketAddress(dstHost, srcPort);
 		this.myType = type;
-		// terminal.println("My Socket Address: " + this.myAdd);
 		listener.go();
 	}
 
