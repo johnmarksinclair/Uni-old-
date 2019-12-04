@@ -29,6 +29,7 @@ struct node * create_node(char * passed) {
 void add_string(struct set * this, char * address) {
     struct node * new = create_node(address);
     new->next = this->head;
+    new->prev = NULL;
     this->head = new;
 }
 
@@ -60,10 +61,16 @@ int main() {
     add_string(temp, "three");
     add_string(temp, "four");
     //remove_string(temp, "two");
-    printf("%d\n", contains(temp, "three"));
-    while(temp->head != NULL) {
-        printf("%s\n", temp->head->address);
-        temp->head = temp->head->next;
-    }
+    //printf("%d\n", contains(temp, "three"));
+    // while(temp->head != NULL) {
+    //     printf("%s\n", temp->head->address);
+    //     temp->head = temp->head->next;
+    // }
+    // temp->head = temp->start;
+    // while(temp->head != NULL) {
+    //     printf("%s\n", temp->head->address);
+    //     temp->head = temp->head->next;
+    // }
+    printf("%s\n", temp->head->address);
     return 0;
 }
