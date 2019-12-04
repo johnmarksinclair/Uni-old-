@@ -12,6 +12,13 @@ struct set * new_set() {
     return new;
 }
 
+struct node * create_first_node(char * passed) {
+    struct node * new = malloc(sizeof(struct node));
+    new->address = passed;
+    new->next = NULL;
+    return new;
+}
+
 struct node * create_node(char * passed) {
     struct node * new = malloc(sizeof(struct node));
     new->address = passed;
