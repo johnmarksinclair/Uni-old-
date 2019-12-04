@@ -12,5 +12,7 @@ struct set {
 
 struct set * new_set();
 void add_string(struct set * this, char * address);
+void remove_string(struct set * this, char * address);
+int contains(struct set * this, char * address);
 
 #endif
