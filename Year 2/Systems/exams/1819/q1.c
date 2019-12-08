@@ -49,7 +49,7 @@ float stack_peek(struct stack *this) {
 bool stack_empty(struct stack *this) {
     return (this->top == 0);
 }
-
+// evaluates a a symbol
 int evalSymb(char * x) {
 	if (strcmp(x, "&") == 0) {
 		return 1;
@@ -61,7 +61,6 @@ int evalSymb(char * x) {
 		return 0;
 	}
 }
-
 float eval_postfix_fuzzy(char **terms, int nterms) {
     struct stack *stack = new_stack(50);
     for (int i = 0; i < nterms; i++) {
@@ -88,7 +87,6 @@ float eval_postfix_fuzzy(char **terms, int nterms) {
     }
     return stack_pop(stack);
 }
-
 int main(int argc, char **argv) {
     if ( argc == 1 ) {
 		// command line contains only the name of the program
