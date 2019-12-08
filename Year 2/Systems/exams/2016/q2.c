@@ -12,13 +12,6 @@ struct set * new_set() {
     return new;
 }
 
-struct node * create_first_node(char * passed) {
-    struct node * new = malloc(sizeof(struct node));
-    new->address = passed;
-    new->next = NULL;
-    return new;
-}
-
 struct node * create_node(char * passed) {
     struct node * new = malloc(sizeof(struct node));
     new->address = passed;
@@ -29,27 +22,29 @@ struct node * create_node(char * passed) {
 void add_string(struct set * this, char * address) {
     struct node * new = create_node(address);
     new->next = this->head;
-    new->prev = NULL;
     this->head = new;
 }
 
 void remove_string(struct set * this, char * address) {
-    while(this->head != NULL) {
-        if (strcmp(this->head->address, address) == 0) {
-            this->head = this->head->next;
-            break;
+    if (contains(this, address) == 1) {
+        struct node * node  = this->head;
+        while(node != NULL) {
+            if (strcmp(node->address, address) == 0) {
+                this->head = this->head->next;
+                break;
+            }
+        node = node->next;
         }
-        this->head = this->head->next;
     }
 }
-
 // returns 1 if true, 0 if false
 int contains(struct set * this, char * address) {
-    while(this->head != NULL) {
-        if (strcmp(this->head->address, address) == 0) {
+    struct node *node  = this->head;
+    while(node != NULL) {
+        if (strcmp(node->address, address) == 0) {
             return 1;
         }
-        this->head = this->head->next;
+        node = node->next;
     }
     return 0;
 }
@@ -60,17 +55,18 @@ int main() {
     add_string(temp, "two");
     add_string(temp, "three");
     add_string(temp, "four");
-    //remove_string(temp, "two");
-    //printf("%d\n", contains(temp, "three"));
-    // while(temp->head != NULL) {
-    //     printf("%s\n", temp->head->address);
-    //     temp->head = temp->head->next;
-    // }
-    // temp->head = temp->start;
-    // while(temp->head != NULL) {
-    //     printf("%s\n", temp->head->address);
-    //     temp->head = temp->head->next;
-    // }
-    printf("%s\n", temp->head->address);
+    int cont = contains(temp, "three");
+    printf("%s\n", (cont == 1) ? "true" : "false");
+    struct node * node = temp -> head;
+    while(node != NULL) {
+        printf("%s\n", node -> address);
+        node = node -> next;
+    }
+    remove_string(temp, "three");
+    node = temp -> head;
+    while(node != NULL) {
+        printf("%s\n", node -> address);
+        node = node -> next;
+    }
     return 0;
 }
