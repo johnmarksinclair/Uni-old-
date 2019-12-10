@@ -7,7 +7,7 @@ struct node {
     int val;
 };
 
-struct queue {
+struct deque {
     struct node * head;
     struct node * tail;
 };
