@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "q2.h"
 // create a new node
 struct node * new_node(int value) {
