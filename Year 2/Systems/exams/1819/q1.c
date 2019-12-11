@@ -1,26 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <math.h>
-#include <stdbool.h>
-// stact struct
-struct stack {
-    float *val;
-    int size;
-    int top;
-};
-// declare stack functions
-struct stack *new_stack(int _size);
-void stack_push(struct stack *this, float _val);
-float stack_pop(struct stack *this);
-float stack_peek(struct stack *this);
-bool stack_empty(struct stack *this);
-float min(int a, int b);
-float max(int a, int b);
-// declare other functions
-int evalSymb(char * x);
-float eval_postfix_fuzzy(char **terms, int nterms);
+#include "q1.h"
 // create new empty stack
 struct stack * new_stack(int _size) {
     struct stack *new = malloc(sizeof(struct stack));
@@ -49,7 +27,7 @@ float stack_peek(struct stack *this) {
 bool stack_empty(struct stack *this) {
     return (this->top == 0);
 }
-// evaluates a a symbol
+// evaluates a passed char
 int evalSymb(char * x) {
 	if (strcmp(x, "&") == 0) {
 		return 1;
@@ -61,6 +39,7 @@ int evalSymb(char * x) {
 		return 0;
 	}
 }
+// evaluates a postfix fuzzy logic expression
 float eval_postfix_fuzzy(char **terms, int nterms) {
     struct stack *stack = new_stack(50);
     for (int i = 0; i < nterms; i++) {
