@@ -1,25 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// structs
-struct node {
-    struct node * next;
-    struct node * prev;
-    int val;
-};
-struct deque {
-    struct node * head;
-    struct node * tail;
-};
-// declarations
-struct node * new_node(int value);
-struct deque * new_deque();
-void push_front_deque(struct deque * this, int value);
-int pop_front_deque(struct deque * this);
-void push_back_deque(struct deque * this, int value);
-int pop_back_deque(struct deque * this);
-void free_deque(struct deque * this);
-void free_deque(struct deque * this);
+#include "q2.h"
 // create a new node
 struct node * new_node(int value) {
     struct node * new = malloc(sizeof(struct node));
@@ -83,19 +65,29 @@ int pop_back_deque(struct deque * this) {
 }
 // free the memory used by the deque
 void free_deque(struct deque * this) {
-
+    free(this);
 }
 int main() {
     struct deque * q = new_deque();
     push_front_deque(q, 2);
-    push_back_deque(q, 3);
     push_front_deque(q, 1);
+    push_back_deque(q, 3);
     struct node * temp = q->head;
-    printf("%d\n", temp->val);
-    temp = q->tail;
-    printf("%d\n", temp->val);
+    while(temp != NULL) {
+        printf("%d\n", temp->val);
+        temp = temp->next;
+    }
     pop_front_deque(q);
     temp = q->head;
-    printf("%d\n", temp->val);
+    while(temp != NULL) {
+        printf("%d\n", temp->val);
+        temp = temp->next;
+    }
+    free_deque(q);
+    temp = q->head;
+    while(temp != NULL) {
+        printf("%d\n", temp->val);
+        temp = temp->next;
+    }
     return 0;
 }
