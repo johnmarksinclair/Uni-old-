@@ -83,6 +83,12 @@ int main() {
         printf("%d\n", temp->val);
         temp = temp->next;
     }
+    pop_back_deque(q);
+    temp = q->head;
+    while(temp != NULL) {
+        printf("%d\n", temp->val);
+        temp = temp->next;
+    }
     free_deque(q);
     temp = q->head;
     while(temp != NULL) {
