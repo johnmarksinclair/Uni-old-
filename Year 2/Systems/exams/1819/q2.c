@@ -65,6 +65,12 @@ int pop_back_deque(struct deque * this) {
 }
 // free the memory used by the deque
 void free_deque(struct deque * this) {
+    struct node * temp;
+    while(this->head != NULL) {
+        temp = this->head->next;
+        free(this->head);
+        this->head = temp;
+    }
     free(this);
 }
 int main() {
@@ -77,18 +83,21 @@ int main() {
         printf("%d\n", temp->val);
         temp = temp->next;
     }
+    printf("\n");
     pop_front_deque(q);
     temp = q->head;
     while(temp != NULL) {
         printf("%d\n", temp->val);
         temp = temp->next;
     }
+    printf("\n");
     pop_back_deque(q);
     temp = q->head;
     while(temp != NULL) {
         printf("%d\n", temp->val);
         temp = temp->next;
     }
+    printf("\n");
     free_deque(q);
     temp = q->head;
     while(temp != NULL) {
