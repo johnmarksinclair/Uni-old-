@@ -1,5 +1,8 @@
 #ifndef Q2_H
 #define Q2_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 // structs
 struct node {
     struct node * next;
