@@ -120,7 +120,6 @@ public class Arith {
 	 * @return the expression in infix order.
 	 **/
 	public static String[] convertPrefixToInfix(String prefixLiterals[]) {
-		// TODO
 		return null;
 	}
 
@@ -139,4 +138,31 @@ public class Arith {
 		return null;
 	}
 
+	public static void main(String[] args) {
+		String[] test = { "-", "2", "1" };
+		System.out.println(toString(test));
+		System.out.println(toString(convertPrefixToInfix(test)));
+	}
+
+	public static String toString(String[] passed) {
+		String returned = "";
+		for (int i = 0; i < passed.length - 1; i++) {
+			returned += passed[i] + ", ";
+		}
+		returned += passed[passed.length - 1];
+		return returned;
+	}
+
+	public static int evalSymb(String x) {
+		if (x.contentEquals("+")) {
+			return 1;
+		} else if (x.contentEquals("-")) {
+			return 2;
+		} else if (x.contentEquals("*")) {
+			return 3;
+		} else if (x.contentEquals("/")) {
+			return 4;
+		}
+		return 0;
+	}
 }
