@@ -5,7 +5,7 @@ package bonusAssignment;
  * Utility class containing validation/evaluation/conversion operations for
  * prefix and postfix arithmetic expressions.
  *
- * @author
+ * @author John Sinclair
  * @version 1/12/15 13:03:48
  */
 
