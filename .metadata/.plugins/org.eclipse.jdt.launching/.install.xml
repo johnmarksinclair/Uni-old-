@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dirs>
-<entry loc="C:\Program Files\Java\jre1.8.0_191" stamp="1539797014842"/>
-<entry loc="C:\Program Files\Java\jdk1.8.0_131" stamp="1499903015785"/>
-<entry loc="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre" stamp="1553280587911"/>
+    <entry loc="C:\Program Files\Java\jre1.8.0_191" stamp="1539797014842"/>
+    <entry loc="C:\Program Files\Java\jdk1.8.0_131" stamp="1499903015785"/>
+    <entry loc="C:\Program Files\Java\jdk-13.0.1" stamp="1577991564233"/>
+    <entry loc="C:\Program Files\AdoptOpenJDK\jdk8u202-b08-jre" stamp="1553280587911"/>
 </dirs>
