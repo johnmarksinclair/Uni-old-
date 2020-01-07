@@ -76,8 +76,7 @@ public class Arith {
 	 * @return the integer result of evaluating the expression
 	 **/
 	public static int evaluatePrefixOrder(String prefixLiterals[]) {
-		String postfix[] = convertPrefixToPostfix(prefixLiterals);
-		return evaluatePostfixOrder(postfix);
+		return evaluatePostfixOrder(convertPrefixToPostfix(prefixLiterals));
 	}
 
 	/**
