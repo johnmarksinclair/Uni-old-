@@ -210,9 +210,10 @@ public class Arith {
 	}
 
 	public static void main(String[] args) {
-		String[] test = { "2", "1", "-" };
-		System.out.println(toString(test));
-		System.out.println(toString(convertPostfixToInfix(test)));
+		String[] test = { "2", "1", "-", "3", "4", "+", "*" };
+		System.out.println("Postfix exp: " + toString(test));
+		System.out.println("Is valid: " + validatePostfixOrder(test));
+		System.out.println("Converted infix exp: " + toString(convertPostfixToInfix(test)));
 	}
 
 	public static String toString(String[] passed) {
