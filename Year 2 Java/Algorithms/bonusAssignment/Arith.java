@@ -145,12 +145,16 @@ public class Arith {
 	}
 
 	public static String toString(String[] passed) {
-		String returned = "";
-		for (int i = 0; i < passed.length - 1; i++) {
-			returned += passed[i] + ", ";
+		if (passed != null) {
+			String returned = "";
+			for (int i = 0; i < passed.length - 1; i++) {
+				returned += passed[i] + ", ";
+			}
+			returned += passed[passed.length - 1];
+			return returned;
+		} else {
+			return null;
 		}
-		returned += passed[passed.length - 1];
-		return returned;
 	}
 
 	public static int evalSymb(String x) {
