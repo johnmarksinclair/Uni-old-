@@ -209,26 +209,6 @@ public class Arith {
 		return infixLiterals;
 	}
 
-	public static void main(String[] args) {
-		String[] test = { "2", "1", "-", "3", "4", "+", "*" };
-		System.out.println("Postfix exp: " + toString(test));
-		System.out.println("Is valid: " + validatePostfixOrder(test));
-		System.out.println("Converted infix exp: " + toString(convertPostfixToInfix(test)));
-	}
-
-	public static String toString(String[] passed) {
-		if (passed != null) {
-			String returned = "";
-			for (int i = 0; i < passed.length - 1; i++) {
-				returned += passed[i] + ", ";
-			}
-			returned += passed[passed.length - 1];
-			return returned;
-		} else {
-			return null;
-		}
-	}
-
 	public static int evalSymb(String x) {
 		if (x.contentEquals("+")) {
 			return 1;

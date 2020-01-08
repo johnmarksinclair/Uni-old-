@@ -6,8 +6,8 @@ import org.junit.Test;
 public class ArithTest {
 
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testEvalSymb() {
+		assertEquals(1, Arith.evalSymb("+"));
+		assertEquals(0, Arith.evalSymb("3"));
 	}
-
 }
