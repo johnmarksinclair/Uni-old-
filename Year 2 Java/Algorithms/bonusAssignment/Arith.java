@@ -27,16 +27,20 @@ public class Arith {
 	 *         otherwise.
 	 **/
 	public static boolean validatePrefixOrder(String prefixLiterals[]) {
-		int counter = 1;
-		for (int i = 0; i < prefixLiterals.length; i++) {
-			if (evalSymb(prefixLiterals[i]) > 0)
-				counter++;
-			else
-				counter--;
-			if (counter <= 0 && i != prefixLiterals.length - 1)
-				return false;
+		if (prefixLiterals.length == 0) {
+			return false;
+		} else {
+			int counter = 1;
+			for (int i = 0; i < prefixLiterals.length; i++) {
+				if (evalSymb(prefixLiterals[i]) > 0)
+					counter++;
+				else
+					counter--;
+				if (counter <= 0 && i != prefixLiterals.length - 1)
+					return false;
+			}
+			return counter == 0;
 		}
-		return counter == 0;
 	}
 
 	/**
@@ -51,16 +55,20 @@ public class Arith {
 	 *         otherwise.
 	 **/
 	public static boolean validatePostfixOrder(String postfixLiterals[]) {
-		int counter = 1;
-		for (int i = 0; i < postfixLiterals.length; i++) {
-			if (evalSymb(postfixLiterals[i]) > 0)
-				counter++;
-			else
-				counter--;
-			if (counter > 0 && i != postfixLiterals.length - 1 && i != 0)
-				return false;
+		if (postfixLiterals.length == 0 || postfixLiterals == null) {
+			return false;
+		} else {
+			int counter = 1;
+			for (int i = 0; i < postfixLiterals.length; i++) {
+				if (evalSymb(postfixLiterals[i]) > 0)
+					counter++;
+				else
+					counter--;
+				if (counter > 0 && i != postfixLiterals.length - 1 && i != 0)
+					return false;
+			}
+			return counter == 0;
 		}
-		return counter == 0;
 	}
 
 //~ Evaluation  methods ..........................................................
@@ -76,7 +84,10 @@ public class Arith {
 	 * @return the integer result of evaluating the expression
 	 **/
 	public static int evaluatePrefixOrder(String prefixLiterals[]) {
-		return evaluatePostfixOrder(convertPrefixToPostfix(prefixLiterals));
+		if (convertPrefixToPostfix(prefixLiterals) != null) {
+			return evaluatePostfixOrder(convertPrefixToPostfix(prefixLiterals));
+		}
+		return 0;
 	}
 
 	/**
@@ -90,18 +101,21 @@ public class Arith {
 	 * @return the integer result of evaluating the expression
 	 **/
 	public static int evaluatePostfixOrder(String postfixLiterals[]) {
-		Stack<Integer> stack = new Stack<Integer>();
-		for (int i = 0; i < postfixLiterals.length; i++) {
-			if (evalSymb(postfixLiterals[i]) == 0) {
-				stack.push(Integer.parseInt(postfixLiterals[i]));
-			} else {
-				int a = stack.pop();
-				int b = stack.pop();
-				int ans = performOp(a, b, evalSymb(postfixLiterals[i]));
-				stack.push(ans);
+		if (validatePostfixOrder(postfixLiterals)) {
+			Stack<Integer> stack = new Stack<Integer>();
+			for (int i = 0; i < postfixLiterals.length; i++) {
+				if (evalSymb(postfixLiterals[i]) == 0) {
+					stack.push(Integer.parseInt(postfixLiterals[i]));
+				} else {
+					int a = stack.pop();
+					int b = stack.pop();
+					int ans = performOp(a, b, evalSymb(postfixLiterals[i]));
+					stack.push(ans);
+				}
 			}
+			return stack.peek();
 		}
-		return stack.peek();
+		return 0;
 	}
 //~ Conversion  methods ..........................................................
 
@@ -116,23 +130,26 @@ public class Arith {
 	 * @return the expression in postfix order.
 	 **/
 	public static String[] convertPrefixToPostfix(String prefixLiterals[]) {
-		String[] postfixLiterals = new String[prefixLiterals.length];
-		Stack<String> stack = new Stack<String>();
-		for (int i = prefixLiterals.length-1; i >= 0; i--) {
-			if (evalSymb(prefixLiterals[i]) != 0) {
-				String a = stack.pop();
-				String b = stack.pop();
-				String ans = a + b + prefixLiterals[i];
-				stack.push(ans);
-			} else {
-				stack.push(prefixLiterals[i]);
+		if (validatePrefixOrder(prefixLiterals)) {
+			String[] postfixLiterals = new String[prefixLiterals.length];
+			Stack<String> stack = new Stack<String>();
+			for (int i = prefixLiterals.length - 1; i >= 0; i--) {
+				if (evalSymb(prefixLiterals[i]) != 0) {
+					String a = stack.pop();
+					String b = stack.pop();
+					String ans = a + b + prefixLiterals[i];
+					stack.push(ans);
+				} else {
+					stack.push(prefixLiterals[i]);
+				}
 			}
+			String finished = stack.pop();
+			for (int i = 0; i < finished.length(); i++) {
+				postfixLiterals[i] = finished.charAt(i) + "";
+			}
+			return postfixLiterals;
 		}
-		String finished = stack.pop();
-		for (int i = 0; i < finished.length(); i++) {
-			postfixLiterals[i] = finished.charAt(i) + "";
-		}
-		return postfixLiterals;
+		return null;
 	}
 
 	/**
@@ -146,23 +163,26 @@ public class Arith {
 	 * @return the expression in prefix order.
 	 **/
 	public static String[] convertPostfixToPrefix(String postfixLiterals[]) {
-		String[] prefixLiterals = new String[postfixLiterals.length];
-		Stack<String> stack = new Stack<String>();
-		for (int i = 0; i < postfixLiterals.length; i++) {
-			if (evalSymb(postfixLiterals[i]) != 0) {
-				String a = stack.pop();
-				String b = stack.pop();
-				String ans = postfixLiterals[i] + a + b;
-				stack.push(ans);
-			} else {
-				stack.push(postfixLiterals[i]);
+		if (validatePostfixOrder(postfixLiterals)) {
+			String[] prefixLiterals = new String[postfixLiterals.length];
+			Stack<String> stack = new Stack<String>();
+			for (int i = 0; i < postfixLiterals.length; i++) {
+				if (evalSymb(postfixLiterals[i]) != 0) {
+					String a = stack.pop();
+					String b = stack.pop();
+					String ans = postfixLiterals[i] + a + b;
+					stack.push(ans);
+				} else {
+					stack.push(postfixLiterals[i]);
+				}
 			}
+			String finished = stack.pop();
+			for (int i = 0; i < finished.length(); i++) {
+				prefixLiterals[i] = finished.charAt(i) + "";
+			}
+			return prefixLiterals;
 		}
-		String finished = stack.pop();
-		for (int i = 0; i < finished.length(); i++) {
-			prefixLiterals[i] = finished.charAt(i) + "";
-		}
-		return prefixLiterals;
+		return null;
 	}
 
 	/**
@@ -176,7 +196,10 @@ public class Arith {
 	 * @return the expression in infix order.
 	 **/
 	public static String[] convertPrefixToInfix(String prefixLiterals[]) {
-		return convertPostfixToInfix(convertPrefixToPostfix(prefixLiterals));
+		if (validatePrefixOrder(prefixLiterals)) {
+			return convertPostfixToInfix(convertPrefixToPostfix(prefixLiterals));
+		}
+		return null;
 	}
 
 	/**
@@ -190,23 +213,26 @@ public class Arith {
 	 * @return the expression in infix order.
 	 **/
 	public static String[] convertPostfixToInfix(String postfixLiterals[]) {
-		String[] infixLiterals = new String[postfixLiterals.length];
-		Stack<String> stack = new Stack<String>();
-		for (int i = 0; i < postfixLiterals.length; i++) {
-			if (evalSymb(postfixLiterals[i]) != 0) {
-				String a = stack.pop();
-				String b = stack.pop();
-				String ans = b + postfixLiterals[i] + a;
-				stack.push(ans);
-			} else {
-				stack.push(postfixLiterals[i]);
+		if (validatePostfixOrder(postfixLiterals)) {
+			String[] infixLiterals = new String[postfixLiterals.length];
+			Stack<String> stack = new Stack<String>();
+			for (int i = 0; i < postfixLiterals.length; i++) {
+				if (evalSymb(postfixLiterals[i]) != 0) {
+					String a = stack.pop();
+					String b = stack.pop();
+					String ans = b + postfixLiterals[i] + a;
+					stack.push(ans);
+				} else {
+					stack.push(postfixLiterals[i]);
+				}
 			}
+			String finished = stack.pop();
+			for (int i = 0; i < finished.length(); i++) {
+				infixLiterals[i] = finished.charAt(i) + "";
+			}
+			return infixLiterals;
 		}
-		String finished = stack.pop();
-		for (int i = 0; i < finished.length(); i++) {
-			infixLiterals[i] = finished.charAt(i) + "";
-		}
-		return infixLiterals;
+		return null;
 	}
 
 	public static int evalSymb(String x) {
@@ -233,6 +259,6 @@ public class Arith {
 		case 4:
 			return b / a;
 		}
-		return -1;
+		return 0;
 	}
 }
