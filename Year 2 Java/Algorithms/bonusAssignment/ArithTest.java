@@ -28,6 +28,8 @@ public class ArithTest {
 		assertFalse(Arith.validatePrefixOrder(prefixLiterals1));
 		String[] prefixLiterals2 = { "+", "2", "4" };
 		assertTrue(Arith.validatePrefixOrder(prefixLiterals2));
+		String[] prefixLiterals3 = { "-", "3", "2", "4" };
+		assertFalse(Arith.validatePrefixOrder(prefixLiterals3));
 	}
 	
 	@Test
@@ -38,6 +40,8 @@ public class ArithTest {
 		assertFalse(Arith.validatePostfixOrder(postfixLiterals1));
 		String[] postfixLiterals2 = { "2", "4", "+" };
 		assertTrue(Arith.validatePostfixOrder(postfixLiterals2));
+		String[] postfixLiterals3 = { "2", "+", "-", "*" };
+		assertFalse(Arith.validatePostfixOrder(postfixLiterals3));
 	}
 	
 	@Test
