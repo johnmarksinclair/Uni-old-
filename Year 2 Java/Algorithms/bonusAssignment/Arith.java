@@ -4,12 +4,12 @@ import java.util.Stack;
 
 //-------------------------------------------------------------------------
 /**
- * Utility class containing validation/evaluation/conversion operations for
- * prefix and postfix arithmetic expressions.
- *
- * @author John Sinclair
- * @version 1/12/15 13:03:48
- */
+* Utility class containing validation/evaluation/conversion operations for
+* prefix and postfix arithmetic expressions.
+*
+* @author John Sinclair
+* @version 1/12/15 13:03:48
+*/
 
 public class Arith {
 
@@ -55,7 +55,7 @@ public class Arith {
 	 *         otherwise.
 	 **/
 	public static boolean validatePostfixOrder(String postfixLiterals[]) {
-		if (postfixLiterals.length == 0 || postfixLiterals == null) {
+		if (postfixLiterals.length == 0) {
 			return false;
 		} else {
 			int counter = 1;
